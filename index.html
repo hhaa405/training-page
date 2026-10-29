@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#f3f5f8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#05070a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#04060f" media="(prefers-color-scheme: dark)">
 <title>小遊戲合集</title>
 <style>
 :root{
@@ -264,11 +264,281 @@ h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--li
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+/* ---------- leaderboard (排行榜) ---------- */
+.lb-entry{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:11px 36px 11px 12px;border-radius:14px;text-align:left;font-size:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);box-shadow:var(--sh1)}
+.lb-entry::after{content:"";position:absolute;right:18px;top:50%;width:7px;height:7px;border-top:1.5px solid var(--ink4);border-right:1.5px solid var(--ink4);transform:translateY(-50%) rotate(45deg);transition:transform .2s,border-color .2s}
+.lb-entry:hover{border-color:var(--accentL);box-shadow:var(--sh1),0 0 0 3px var(--accentT)}
+.lb-entry:hover::after{transform:translate(2px,-50%) rotate(45deg);border-color:var(--accent)}
+.lb-entry:active{transform:scale(.98);background:var(--card2);border-color:var(--accentL)}
+.lb-entry .li{flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--accentT);border:1px solid var(--accentL)}
+.lb-entry .lt{flex:1;min-width:0}
+.lb-entry b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.lb-entry small{display:block;font-size:12px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-entry .lm{flex:none;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;color:var(--accent);padding:2px 8px;border-radius:6px;border:1px solid var(--accentL);background:var(--accentT);white-space:nowrap}
+.lb-entry .lm:empty{display:none}
+#lbSheet .sheet{min-height:min(560px,calc(100% - var(--sat) - 12px))}
+.lb-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:2px 2px 14px;padding-right:38px}
+.lb-head h3{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.lb-kicker{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.lb-kicker b{color:var(--accent);font-family:var(--mono);font-weight:600}
+.lb-seg{position:relative;display:grid;grid-template-columns:repeat(4,1fr);padding:2px;border-radius:10px;background:var(--fill);border:1px solid var(--line);margin-bottom:14px}
+.lb-seg::before{content:"";position:absolute;top:2px;bottom:2px;left:2px;width:calc((100% - 4px)/4);border-radius:8px;background:var(--card);box-shadow:0 2px 6px rgba(0,0,0,.08),0 0 0 1px var(--accentL);transform:translateX(calc(100% * var(--i,0)));transition:transform .28s cubic-bezier(.3,1,.4,1)}
+.lb-seg button{position:relative;z-index:1;padding:7px 0;font-size:13px;font-weight:500;color:var(--ink2);border-radius:8px;white-space:nowrap}
+.lb-seg button.on{font-weight:600;color:var(--ink)}
+.lb-seg button:active{transform:none}
+.lb-cols{display:flex;justify-content:space-between;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);padding:0 14px 6px}
+.lb-cols span:first-child{padding-left:2px}
+.lb-list{border-radius:12px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.lb-row{position:relative;display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px}
+.lb-row+.lb-row::before{content:"";position:absolute;top:0;left:14px;right:0;border-top:1px solid var(--line)}
+.lb-rank{flex:none;width:28px;text-align:center;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;color:var(--ink3)}
+.lb-row.m .lb-rank{font-size:20px;line-height:1}
+.lb-av{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--accent);background:var(--accentT);border:1px solid var(--accentL)}
+.lb-row.m1 .lb-av{color:#fff;background:var(--avg);border-color:transparent;box-shadow:0 0 0 3px var(--accentT)}
+.lb-who{flex:1;min-width:0}
+.lb-who b{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden}
+.lb-who b span{overflow:hidden;text-overflow:ellipsis}
+.lb-who small{display:block;font-family:var(--mono);font-size:12px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-you{flex:none;font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--accent);border:1px solid var(--accentL);border-radius:5px;padding:0 5px;line-height:16px}
+.lb-sc{flex:none;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:18px;font-weight:600;color:var(--ink);white-space:nowrap}
+.lb-sc small{font-family:var(--font);font-size:12px;font-weight:500;color:var(--ink3);margin-left:3px}
+.lb-row.m1 .lb-sc{color:var(--accent)}
+.lb-row.me{background:var(--accentT)}
+.lb-row.me::after{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;border-radius:0 2px 2px 0;background:var(--accent);box-shadow:0 0 8px var(--accentL)}
+.lb-row.me+.lb-row::before,.lb-row.me::before{border-color:transparent}
+.lb-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:34px 20px 30px}
+.lb-empty .ei{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--accentT);border:1px solid var(--accentL);margin-bottom:6px}
+.lb-empty b{font-size:16px;font-weight:600}
+.lb-empty p{font-size:14px;color:var(--ink2);line-height:1.5}
+.lb-empty button{margin-top:10px;font-size:14px;font-weight:600;color:var(--accent);padding:7px 16px;border-radius:999px;border:1px solid var(--accentL);background:var(--accentT)}
+.lb-note{font-size:12px;line-height:1.55;color:var(--ink3);text-align:center;margin-top:14px}
+@media (prefers-color-scheme:dark){
+  .lb-entry{background:color-mix(in srgb,var(--card) 92%,transparent)}
+  .lb-seg::before{background:var(--card2)}
+  .sheet .lb-list{background:var(--card)}
+  .lb-row.m1 .lb-av{color:#001a26}
+  .lb-row.m1 .lb-sc{text-shadow:0 0 14px rgba(25,184,255,.25)}
+}
+@media (max-width:370px){.lb-seg button{font-size:12px}.lb-sc{font-size:16px}}
+/* ================= COLOR-TECH LAYER (curated neon palette) ================= */
+:root{
+  --c-blue:#3b82f6;--c-cyan:#06b6d4;--c-violet:#8b5cf6;--c-pink:#ec4899;--c-lime:#22c55e;--c-amber:#f59e0b;
+  --c-blueD:#2563eb;--c-violetD:#7c3aed;--c-cyanD:#0891b2;--c-pinkD:#db2777;--c-emD:#059669;--c-amberD:#d97706;
+  --spec:linear-gradient(90deg,var(--c-cyan),var(--c-blue) 35%,var(--c-violet) 68%,var(--c-pink));
+  --bg:#f4f6fb;--accent:#2563eb;--accent2:#06b6d4;--accentH:#3b82f6;--accentP:#1d4ed8;--accentT:rgba(59,130,246,.09);--accentL:rgba(59,130,246,.3);
+  --avg:linear-gradient(135deg,#06b6d4,#3b82f6 45%,#8b5cf6);
+  --grid:rgba(60,80,170,.06);--green:#16a34a;
+  --cardbg:var(--card);
+  --gl:.32; /* glow strength */
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#04060f;--card:#0a0f1e;--card2:#10172b;--ink:#eaf0ff;--ink2:#9aa6c0;--ink3:#7783a0;--ink4:#4a5470;
+  --line:rgba(130,160,255,.1);--line2:rgba(130,160,255,.15);--fill:rgba(130,160,255,.08);--fill2:rgba(130,160,255,.05);
+  --accent:#60a5fa;--accent2:#22d3ee;--accentH:#3b82f6;--accentP:#2563eb;--accentT:rgba(96,165,250,.13);--accentL:rgba(96,165,250,.4);
+  --grid:rgba(120,150,255,.06);--green:#4ade80;
+  --bar:rgba(4,6,15,.7);--sheet:#070b18;--toast:rgba(12,17,34,.9);
+  --cardbg:rgba(10,15,30,.86);
+  --gl:.55;
+}}
+/* aurora glow at the top of the grid */
+body{background:
+  radial-gradient(60% 38% at 12% -4%,rgba(6,182,212,.16),transparent 70%),
+  radial-gradient(55% 34% at 55% -8%,rgba(139,92,246,.14),transparent 70%),
+  radial-gradient(50% 30% at 96% 0%,rgba(236,72,153,.12),transparent 70%),var(--bg)}
+@media (prefers-color-scheme:dark){body{background:
+  radial-gradient(65% 40% at 10% -5%,rgba(6,182,212,.26),transparent 70%),
+  radial-gradient(60% 36% at 55% -10%,rgba(139,92,246,.28),transparent 70%),
+  radial-gradient(55% 32% at 98% 2%,rgba(236,72,153,.2),transparent 70%),
+  radial-gradient(80% 50% at 50% 115%,rgba(59,130,246,.12),transparent 70%),var(--bg)}}
+
+/* per-game color identity */
+[data-go=tap],#tap,[data-lb=tap],.rec:nth-child(1){--g1:var(--c-cyan);--g2:var(--c-blue);--gD1:var(--c-cyanD);--gD2:var(--c-blueD);--gt:rgba(6,182,212,.12);--gc:6,182,212}
+[data-go=simon],#simon,[data-lb=simon],.rec:nth-child(2){--g1:var(--c-violet);--g2:var(--c-pink);--gD1:var(--c-violetD);--gD2:var(--c-pinkD);--gt:rgba(139,92,246,.12);--gc:139,92,246}
+[data-go=guess],#guess,[data-lb=guess],.rec:nth-child(3){--g1:var(--c-lime);--g2:var(--c-cyan);--gD1:var(--c-emD);--gD2:var(--c-cyanD);--gt:rgba(34,197,94,.12);--gc:34,197,94}
+[data-lb=coins],.stat:nth-child(1){--g1:var(--c-amber);--g2:#fbbf24;--gD1:var(--c-amberD);--gD2:#b45309;--gt:rgba(245,158,11,.13);--gc:245,158,11}
+.stat:nth-child(2){--g1:var(--c-pink);--g2:var(--c-violet);--gt:rgba(236,72,153,.12);--gc:236,72,153}
+#lbSheet{--g1:var(--c-cyan);--g2:var(--c-blue);--gt:rgba(6,182,212,.12);--gc:6,182,212}
+#lbSheet:has([data-lb=simon].on){--g1:var(--c-violet);--g2:var(--c-pink);--gt:rgba(139,92,246,.12);--gc:139,92,246}
+#lbSheet:has([data-lb=guess].on){--g1:var(--c-lime);--g2:var(--c-cyan);--gt:rgba(34,197,94,.12);--gc:34,197,94}
+#lbSheet:has([data-lb=coins].on){--g1:var(--c-amber);--g2:#fbbf24;--gt:rgba(245,158,11,.13);--gc:245,158,11}
+@media (prefers-color-scheme:light){
+  /* deeper ink for colored text on light backgrounds */
+  [data-go=tap],#tap,.rec:nth-child(1),#lbSheet{--gtx:#0e7490}
+  [data-go=simon],#simon,.rec:nth-child(2),#lbSheet:has([data-lb=simon].on){--gtx:#7c3aed}
+  [data-go=guess],#guess,.rec:nth-child(3),#lbSheet:has([data-lb=guess].on){--gtx:#047857}
+  #lbSheet:has([data-lb=coins].on){--gtx:#b45309}
+}
+@media (prefers-color-scheme:dark){
+  [data-go=tap],#tap,.rec:nth-child(1),#lbSheet{--gtx:#22d3ee}
+  [data-go=simon],#simon,.rec:nth-child(2),#lbSheet:has([data-lb=simon].on){--gtx:#c4b5fd}
+  [data-go=guess],#guess,.rec:nth-child(3),#lbSheet:has([data-lb=guess].on){--gtx:#4ade80}
+  #lbSheet:has([data-lb=coins].on){--gtx:#fbbf24}
+}
+
+/* header: animated spectrum hairline */
+#top{border-bottom-color:transparent}
+#top::after{height:1.5px;bottom:-1px;background:linear-gradient(90deg,transparent,var(--c-cyan) 15%,var(--c-blue) 35%,var(--c-violet) 55%,var(--c-pink) 75%,transparent) 0 0/200% 100%;opacity:.85;animation:sheen 9s linear infinite}
+@keyframes sheen{to{background-position:-200% 0}}
+#coins{border-color:rgba(245,158,11,.35);box-shadow:0 0 0 3px rgba(245,158,11,.08),0 0 14px -6px rgba(245,158,11,calc(var(--gl) + .2))}
+#acctBtn{box-shadow:0 0 0 1px rgba(139,92,246,.45),0 0 0 3px rgba(139,92,246,.12),0 0 14px -4px rgba(139,92,246,var(--gl))}
+#backBtn{color:var(--gtx,var(--accent))}
+
+/* hero title: slow gradient sheen */
+.hero .hello{color:var(--ink2)}
+.hero .hero-title{background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 28%,var(--c-blue) 42%,var(--c-violet) 52%,var(--c-pink) 60%,var(--ink) 74%,var(--ink) 100%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:titleSheen 7s ease-in-out infinite alternate;padding-bottom:2px}
+@keyframes titleSheen{from{background-position:100% 0}to{background-position:0 0}}
+@media (prefers-color-scheme:light){.hero .hero-title{background-image:linear-gradient(100deg,var(--ink) 0%,var(--ink) 28%,#2563eb 42%,#7c3aed 52%,#db2777 60%,var(--ink) 74%,var(--ink) 100%)}}
+
+/* stat tiles: tinted icon + colored glow underneath */
+.stat{border:1px solid transparent;background:linear-gradient(var(--cardbg),var(--cardbg)) padding-box,linear-gradient(135deg,rgba(var(--gc),.55),var(--line) 55%) border-box!important;box-shadow:var(--sh1),0 12px 22px -14px rgba(var(--gc),calc(var(--gl) + .25))}
+.stat::before{left:12px;right:auto;width:46%;height:2px;top:-1px;border-radius:2px;background:linear-gradient(90deg,var(--g1),var(--g2));box-shadow:0 0 10px rgba(var(--gc),.7)}
+.stat .si{background:linear-gradient(145deg,rgba(var(--gc),.2),rgba(var(--gc),.06));border-color:rgba(var(--gc),.35);box-shadow:inset 0 0 12px -6px rgba(var(--gc),.8)}
+
+/* game cards: gradient glowing edge + gradient icon tile + accent line */
+.card{border:1px solid transparent;background:linear-gradient(var(--cardbg),var(--cardbg)) padding-box,linear-gradient(120deg,var(--g1),var(--g2) 32%,var(--line2) 62%,var(--line2)) border-box!important;box-shadow:var(--sh1),0 10px 26px -18px rgba(var(--gc),calc(var(--gl) + .3));overflow:hidden}
+.card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--g1),var(--g2));box-shadow:0 0 12px rgba(var(--gc),.8)}
+.card .ic{border:none;color:#fff;box-shadow:0 6px 16px -6px rgba(var(--gc),.75),inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.12)}
+.card[data-go] .ic{background:linear-gradient(140deg,var(--g1),var(--g2))!important}
+.card h3{color:var(--ink)}
+.card:hover,.card:active{border-color:transparent;box-shadow:var(--sh1),0 0 0 3px var(--gt),0 12px 28px -14px rgba(var(--gc),.8)}
+.card:active{background:linear-gradient(var(--card2),var(--card2)) padding-box,linear-gradient(120deg,var(--g1),var(--g2) 40%,var(--line2)) border-box!important}
+.card:hover::after{border-color:var(--g1)}
+.card::after{border-color:rgba(var(--gc),.7)}
+
+/* section labels */
+h2::after{background:linear-gradient(90deg,rgba(59,130,246,.45),rgba(139,92,246,.25) 40%,transparent)}
+
+/* records: each game in its own color */
+.records{border:1px solid transparent;background:linear-gradient(var(--cardbg),var(--cardbg)) padding-box,linear-gradient(90deg,rgba(6,182,212,.5),rgba(139,92,246,.45) 50%,rgba(34,197,94,.45)) border-box!important}
+.rec{position:relative}
+.rec::before{content:"";position:absolute;left:28%;right:28%;top:0;height:2px;border-radius:0 0 2px 2px;background:linear-gradient(90deg,var(--g1),var(--g2));box-shadow:0 0 10px rgba(var(--gc),.8)}
+.rec b{color:var(--gtx)}
+@media (prefers-color-scheme:dark){.rec b{text-shadow:0 0 14px rgba(var(--gc),.45)}.stat b{text-shadow:0 0 14px rgba(var(--gc),.3)}}
+
+/* leaderboard entry */
+.lb-entry{border:1px solid transparent;background:linear-gradient(var(--cardbg),var(--cardbg)) padding-box,linear-gradient(110deg,var(--c-amber),var(--c-pink) 30%,var(--c-violet) 55%,var(--line2) 80%) border-box!important;box-shadow:var(--sh1),0 10px 24px -16px rgba(236,72,153,calc(var(--gl) + .25))}
+.lb-entry .li{border:none;background:linear-gradient(140deg,#fbbf24,var(--c-pink));box-shadow:0 6px 14px -6px rgba(236,72,153,.7),inset 0 1px 0 rgba(255,255,255,.3)}
+.lb-entry .lm{color:#b45309;border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.1)}
+.lb-entry:hover::after{border-color:var(--c-pink)}
+@media (prefers-color-scheme:dark){.lb-entry .lm{color:#fbbf24}}
+
+/* multi-color progress bar */
+.tbar{height:5px;border-radius:3px;background:var(--fill);overflow:hidden}
+.tbar i{min-width:10px;background:linear-gradient(90deg,var(--c-cyan),var(--c-blue) 35%,var(--c-violet) 68%,var(--c-pink));box-shadow:0 0 10px rgba(139,92,246,.6),0 0 3px rgba(59,130,246,.9)}
+#taskBar[style*="width: 0"],#taskBar:not([style]){min-width:0}
+.tprog span{color:var(--ink2)}
+/* top bar tinted by the open game */
+body:has(#tap:not(.hidden)) #top{--gtx:var(--tapT)}body:has(#simon:not(.hidden)) #top{--gtx:var(--simT)}body:has(#guess:not(.hidden)) #top{--gtx:var(--gueT)}
+:root{--tapT:#0e7490;--simT:#7c3aed;--gueT:#047857}
+@media (prefers-color-scheme:dark){:root{--tapT:#22d3ee;--simT:#c4b5fd;--gueT:#4ade80}}
+#taskList{border-color:transparent;background:linear-gradient(var(--cardbg),var(--cardbg)) padding-box,linear-gradient(135deg,rgba(139,92,246,.4),var(--line) 50%,rgba(236,72,153,.3)) border-box!important}
+.task .r{color:#b45309;border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.1)}
+.task.done .r{color:var(--green);border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.1)}
+@media (prefers-color-scheme:dark){.task .r{color:#fbbf24}}
+
+/* primary buttons: gradient neon */
+.btn,.btn.blue{color:#fff!important;background:linear-gradient(120deg,var(--c-blueD),var(--c-violetD));text-shadow:0 1px 1px rgba(0,0,0,.18);
+  box-shadow:0 0 0 1px rgba(139,92,246,.35),0 8px 22px -6px rgba(99,102,241,calc(var(--gl) + .25)),0 0 26px -8px rgba(139,92,246,var(--gl)),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn:hover{background:linear-gradient(120deg,var(--c-blue),var(--c-violet))}
+.btn:active{background:linear-gradient(120deg,var(--accentP),#6d28d9);box-shadow:0 0 0 1px rgba(139,92,246,.5)}
+#tap .btn,#simon .btn,#guess .btn{background:linear-gradient(120deg,var(--gD1),var(--gD2));box-shadow:0 0 0 1px rgba(var(--gc),.4),0 8px 22px -6px rgba(var(--gc),calc(var(--gl) + .25)),0 0 28px -8px rgba(var(--gc),var(--gl)),inset 0 1px 0 rgba(255,255,255,.25)}
+#nameRow button{color:#fff!important;background:linear-gradient(120deg,var(--c-blueD),var(--c-violetD));box-shadow:0 0 0 1px rgba(139,92,246,.35),0 6px 16px -6px rgba(139,92,246,.6)}
+
+/* game screens */
+.overlay h1{background:linear-gradient(100deg,var(--gD1,var(--c-blueD)),var(--gD2,var(--c-violetD)));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+@media (prefers-color-scheme:dark){.overlay h1{background-image:linear-gradient(100deg,var(--g1,var(--c-blue)),var(--g2,var(--c-violet)))}}
+.overlay .big{color:var(--gtx,var(--ink))}
+@media (prefers-color-scheme:dark){.overlay .big{text-shadow:0 0 24px rgba(var(--gc,59,130,246),.5)}}
+.hud{border:1px solid transparent;background:linear-gradient(var(--cardbg),var(--cardbg)) padding-box,linear-gradient(90deg,var(--g1),var(--g2) 45%,var(--line2)) border-box!important;box-shadow:var(--sh1),0 10px 24px -14px rgba(var(--gc),calc(var(--gl) + .3))}
+.hud>span:first-child b{color:var(--gtx)}
+.hud>span:nth-child(2) b{color:var(--c-pinkD)}
+@media (prefers-color-scheme:dark){.hud>span:first-child b{text-shadow:0 0 12px rgba(var(--gc),.6)}.hud>span:nth-child(2) b{color:#f472b6}}
+.dot{background:radial-gradient(circle at 34% 28%,#cffafe 0%,#22d3ee 28%,#3b82f6 72%,#4f46e5 100%)!important;color:#22d3ee!important;box-shadow:0 0 0 1px rgba(34,211,238,.5),0 0 22px -2px rgba(6,182,212,.7),0 0 40px -10px rgba(59,130,246,.8)}
+.dot .ring{border-color:rgba(34,211,238,.85);box-shadow:0 0 8px rgba(34,211,238,.5)}
+.burst{color:var(--gtx)}
+/* simon */
+#simonInfo{color:var(--ink)}
+#sLevel{background:linear-gradient(100deg,var(--c-violet),var(--c-pink));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding:0 2px}
+#pads{border:1px solid transparent;background:linear-gradient(var(--cardbg),var(--cardbg)) padding-box,linear-gradient(135deg,var(--c-violet),var(--c-pink) 40%,var(--line2) 75%) border-box!important;box-shadow:var(--sh2),0 18px 40px -20px rgba(139,92,246,calc(var(--gl) + .3)),0 0 40px -20px rgba(236,72,153,.6)}
+.pad[data-i="0"]{background:linear-gradient(145deg,#f472b6,#db2777)!important;--pc:236,72,153}
+.pad[data-i="1"]{background:linear-gradient(145deg,#60a5fa,#2563eb)!important;--pc:59,130,246}
+.pad[data-i="2"]{background:linear-gradient(145deg,#fcd34d,#f59e0b)!important;--pc:245,158,11}
+.pad[data-i="3"]{background:linear-gradient(145deg,#4ade80,#16a34a)!important;--pc:34,197,94}
+.pad.on{box-shadow:0 0 0 2px rgba(255,255,255,.6) inset,0 0 30px -2px rgba(var(--pc),.9),0 0 60px -10px rgba(var(--pc),.8)}
+#simonMsg{color:var(--ink2)}
+/* guess */
+#guess .q{border:1px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,var(--c-lime),var(--c-cyan)) border-box;box-shadow:0 0 0 6px rgba(34,197,94,.1),0 0 30px -6px rgba(6,182,212,calc(var(--gl) + .2)),var(--sh2)}
+#guessInput:focus{border-color:var(--c-cyan);box-shadow:0 0 0 4px rgba(6,182,212,.14),0 0 18px -4px rgba(34,197,94,.6)}
+.hi{background:rgba(236,72,153,.1);color:#be185d;border-color:rgba(236,72,153,.35)!important}
+.lo{background:rgba(6,182,212,.1);color:#0e7490;border-color:rgba(6,182,212,.4)!important}
+.ok{background:linear-gradient(120deg,var(--c-emD),var(--c-cyanD));color:#fff;box-shadow:0 0 0 1px rgba(34,197,94,.4),0 6px 18px -6px rgba(34,197,94,.8)}
+@media (prefers-color-scheme:dark){.hi{color:#f9a8d4}.lo{color:#67e8f9}}
+
+/* toasts / sheets */
+.toast::before{background:linear-gradient(140deg,rgba(6,182,212,.2),rgba(139,92,246,.2));border-color:rgba(139,92,246,.4)}
+.toast{border-color:rgba(139,92,246,.25)}
+.sheet::before{left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--c-cyan),var(--c-blue),var(--c-violet),var(--c-pink),transparent);opacity:.9}
+.sheet-logo{border:1px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,var(--c-cyan),var(--c-violet),var(--c-pink)) border-box!important;box-shadow:0 0 0 5px rgba(139,92,246,.1),0 0 26px -8px rgba(139,92,246,.7)}
+.seg::before{box-shadow:0 2px 6px rgba(0,0,0,.08),0 0 0 1px rgba(139,92,246,.4),0 0 14px -6px rgba(139,92,246,.6)}
+.pin i.filled::after{background:linear-gradient(135deg,var(--c-blue),var(--c-violet));box-shadow:0 0 8px rgba(139,92,246,.6)}
+.av{box-shadow:0 0 0 1px rgba(139,92,246,.45),0 0 0 6px rgba(139,92,246,.12),0 0 30px -6px rgba(139,92,246,.8)}
+
+/* leaderboard sheet: tinted by the active game */
+.lb-kicker b{color:var(--gtx)}
+.lb-seg button::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:1px;background:linear-gradient(135deg,var(--g1),var(--g2));opacity:.55}
+.lb-seg button.on::before{opacity:1;box-shadow:0 0 8px rgba(var(--gc),.9)}
+.lb-seg button.on{color:var(--gtx)}
+.lb-seg::before{border:1px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,var(--g1),var(--g2)) border-box;box-shadow:0 2px 6px rgba(0,0,0,.08),0 0 16px -6px rgba(var(--gc),.9)}
+@media (prefers-color-scheme:dark){.lb-seg::before{background:linear-gradient(var(--card2),var(--card2)) padding-box,linear-gradient(135deg,var(--g1),var(--g2)) border-box}}
+.lb-list{border:1px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,rgba(var(--gc),.6),var(--line2) 45%) border-box!important;box-shadow:0 14px 30px -20px rgba(var(--gc),calc(var(--gl) + .3))}
+.lb-av{color:var(--gtx);background:var(--gt);border-color:rgba(var(--gc),.4)}
+.lb-row.m1 .lb-av{color:#fff!important;background:linear-gradient(140deg,var(--g1),var(--g2));box-shadow:0 0 0 3px var(--gt),0 0 14px -2px rgba(var(--gc),.7)}
+.lb-row.m1 .lb-sc{color:var(--gtx)}
+@media (prefers-color-scheme:dark){.lb-row.m1 .lb-sc{text-shadow:0 0 14px rgba(var(--gc),.55)}}
+.lb-row.me{background:linear-gradient(90deg,rgba(var(--gc),.16),rgba(var(--gc),.04) 80%)}
+.lb-row.me::after{width:3px;background:linear-gradient(180deg,var(--g1),var(--g2));box-shadow:0 0 10px rgba(var(--gc),.9)}
+.lb-you{color:var(--gtx);border-color:rgba(var(--gc),.5);background:var(--gt)}
+.lb-empty .ei{background:var(--gt);border-color:rgba(var(--gc),.45)}
+.lb-empty button{color:var(--gtx);border-color:rgba(var(--gc),.45);background:var(--gt)}
+
+@media (prefers-reduced-motion:reduce){
+  #top::after,.hero .hero-title{animation:none!important}
+  .hero .hero-title{background-position:60% 0}
+}
+/* ---------- ☁️ cloud sync pill + account line ---------- */
+.sync-pill{flex:none;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px 0 8px;margin-left:-2px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.02em;white-space:nowrap;color:var(--ink2);
+  border:1px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--line2),var(--line2)) border-box;font-family:var(--font)}
+.sync-pill i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--ink4);transition:background-color .3s,box-shadow .3s}
+.sync-pill:active{transform:scale(.95)}
+#backBtn:not(.hidden)~.sync-pill{display:none}
+.sync-pill[data-s=ok],.sync-pill[data-s=online]{color:#0e7490;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--c-cyan),var(--c-blue) 55%,var(--c-violet)) border-box;box-shadow:0 0 0 3px rgba(6,182,212,.08),0 0 14px -6px rgba(6,182,212,calc(var(--gl) + .3))}
+.sync-pill[data-s=ok] i,.sync-pill[data-s=online] i{background:#22d3ee;box-shadow:0 0 0 2px rgba(34,211,238,.18),0 0 8px rgba(34,211,238,.9)}
+.sync-pill[data-s=sync],.sync-pill[data-s=loading]{color:#7c3aed;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--c-violet),var(--c-pink),var(--c-blue),var(--c-violet)) border-box;background-size:100% 100%,300% 100%;animation:pillSheen 1.6s linear infinite}
+.sync-pill[data-s=sync] i,.sync-pill[data-s=loading] i{background:#a78bfa;box-shadow:0 0 8px rgba(139,92,246,.9);animation:pillBlink 1s ease-in-out infinite}
+.sync-pill[data-s=off]{color:var(--ink3)}
+.sync-pill[data-s=local]{color:#b45309;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--c-amber),#fbbf24) border-box;box-shadow:0 0 0 3px rgba(245,158,11,.08)}
+.sync-pill[data-s=local] i{background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.8)}
+@keyframes pillSheen{to{background-position:0 0,300% 0}}
+@keyframes pillBlink{50%{opacity:.35}}
+@media (prefers-color-scheme:dark){
+  .sync-pill[data-s=ok],.sync-pill[data-s=online]{color:#67e8f9}
+  .sync-pill[data-s=sync],.sync-pill[data-s=loading]{color:#c4b5fd}
+  .sync-pill[data-s=local]{color:#fbbf24}
+}
+@media (max-width:350px){.sync-pill{padding:0 8px 0 7px;font-size:11px}}
+.acct-cloud{margin-top:10px;max-width:300px;font-size:12px;line-height:1.5;font-weight:500;color:var(--ink3);padding:5px 12px;border-radius:999px;border:1px solid var(--line2);background:var(--fill2)}
+.acct-cloud:empty{display:none}
+.acct-cloud[data-s=ok]{color:#0e7490;border-color:rgba(6,182,212,.4);background:rgba(6,182,212,.08)}
+.acct-cloud[data-s=sync]{color:#7c3aed;border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.08)}
+.acct-cloud[data-s=local]{color:#b45309;border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.1);border-radius:12px}
+@media (prefers-color-scheme:dark){.acct-cloud[data-s=ok]{color:#67e8f9}.acct-cloud[data-s=sync]{color:#c4b5fd}.acct-cloud[data-s=local]{color:#fbbf24}}
+@media (prefers-reduced-motion:reduce){.sync-pill,.sync-pill i{animation:none!important}}
 </style>
 </head>
 <body>
 <div id="top">
   <button id="backBtn" class="hidden">‹ 首頁</button>
+  <button id="syncPill" class="sync-pill hidden" type="button" data-s="loading" aria-label="雲端同步狀態"><i></i><span id="syncTxt">☁️ 連線中…</span></button>
   <span class="title" id="topTitle">小遊戲合集</span>
   <span id="coins">🪙 0</span>
   <button id="acctBtn" type="button" aria-label="帳號">🙂</button>
@@ -296,6 +566,7 @@ h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--li
     <div class="rec"><span>顏色記憶</span><b id="recSimon">-</b></div>
     <div class="rec"><span>猜數字</span><b id="recGuess">-</b></div>
   </div>
+  <button type="button" class="lb-entry" id="lbOpen"><span class="li">🏅</span><span class="lt"><b>排行榜</b><small id="lbEntrySub">和這台裝置上的玩家比一比</small></span><span class="lm" id="lbEntryMeta"></span></button>
   <h2>📋 今日任務</h2>
   <div class="tprog" aria-hidden="true"><div class="tbar"><i id="taskBar"></i></div><span id="taskCount">0/0</span></div>
   <div id="taskList"></div>
@@ -362,7 +633,7 @@ h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--li
       <div class="auth-err" id="signupErr" role="alert"></div>
       <button class="btn wide" type="submit">建立帳號並開始</button>
     </form>
-    <p class="auth-note">帳號資料只存在這台裝置的瀏覽器，三位數密碼僅防誤用，請勿使用重要密碼。</p>
+    <p class="auth-note">☁️ 帳號和遊戲進度會同步到雲端，換手機用帳號＋密碼就能登入。<br>三位數密碼只是基本防護，請勿使用重要的密碼。</p>
   </div>
 </div>
 
@@ -371,13 +642,28 @@ h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--li
   <div class="sheet">
     <div class="grabber"></div>
     <button type="button" class="sheet-close" id="acctClose" aria-label="關閉">✕</button>
-    <div class="acct-card"><div class="av" id="acctAvatar">🙂</div><div id="acctName">玩家</div><div id="acctId"></div></div>
+    <div class="acct-card"><div class="av" id="acctAvatar">🙂</div><div id="acctName">玩家</div><div id="acctId"></div><div class="acct-cloud" id="acctCloud"></div></div>
     <div class="list">
       <button type="button" id="editNameBtn"><span class="li" style="background:#efe9ff">✏️</span>編輯名稱</button>
       <form id="nameRow" class="hidden" novalidate><input id="nameEdit" type="text" maxlength="12" aria-label="新名稱"><button type="submit">儲存</button><div class="auth-err" id="nameErr" role="alert"></div></form>
       <button type="button" id="switchBtn"><span class="li" style="background:#e3f0ff">🔄</span>切換帳號</button>
       <button type="button" id="logoutBtn" class="danger"><span class="li" style="background:#ffe6ec">🚪</span>登出</button>
     </div>
+  </div>
+</div>
+
+<!-- LEADERBOARD SHEET -->
+<div id="lbSheet" class="sheet-wrap hidden" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+  <div class="sheet">
+    <div class="grabber"></div>
+    <button type="button" class="sheet-close" id="lbClose" aria-label="關閉">✕</button>
+    <div class="lb-head"><div><div class="lb-kicker">Leaderboard · <b id="lbCount">0</b> 位玩家</div><h3 id="lbTitle">🏆 排行榜</h3></div></div>
+    <div class="lb-seg" id="lbSeg" role="tablist" style="--i:0">
+      <button type="button" role="tab" data-lb="tap" class="on">點點點</button><button type="button" role="tab" data-lb="simon">顏色記憶</button><button type="button" role="tab" data-lb="guess">猜數字</button><button type="button" role="tab" data-lb="coins">金幣</button>
+    </div>
+    <div class="lb-cols" id="lbCols"><span>排名・玩家</span><span id="lbColR">分數</span></div>
+    <div class="lb-list" id="lbList"></div>
+    <p class="lb-note" id="lbNote">目前離線，只顯示這台裝置上的帳號；連上網路後會顯示所有玩家。</p>
   </div>
 </div>
 
@@ -395,7 +681,9 @@ S.coins=S.coins||0;S.best=S.best||{};S.streak=S.streak||0;
 if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
 }
 loadS();
-const save=()=>{if(!KEY)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+// cloud hook: tell the (optional) sync layer that something changed
+const emit=(t,d)=>{try{document.dispatchEvent(new CustomEvent('gamehub:'+t,{detail:Object.assign({id:KEY?KEY.slice(LEGACY_KEY.length+1):null},d)}))}catch(e){}};
+const save=()=>{if(!KEY)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}emit('save')};
 
 /* ---------- tasks & coins ---------- */
 const TASKS=[
@@ -643,7 +931,7 @@ function loadPlayer(id){
   CUR=a;KEY=LEGACY_KEY+':'+a.id;G.active=false;
   try{localStorage.setItem(SES_KEY,a.id)}catch(e){}
   loadS();checkStreak();
-  renderCoins();renderHome();renderPlayer();go('home');
+  renderCoins();renderHome();renderPlayer();go('home');emit('login');
   clearTimeout(loginTimer);loginTimer=setTimeout(()=>complete('login'),400);
   return true;
 }
@@ -651,7 +939,7 @@ function logout(){
   go('home');clearTimeout(loginTimer);
   CUR=null;KEY=null;G.active=false;
   try{localStorage.removeItem(SES_KEY)}catch(e){}
-  loadS();renderCoins();renderHome();renderPlayer();
+  loadS();renderCoins();renderHome();renderPlayer();emit('logout');
   closeSheet('acctSheet');openAuth('login');
 }
 /* sheets */
@@ -700,6 +988,16 @@ $('loginForm').addEventListener('submit',async e=>{
   if(!PIN_RE.test(pin))return authErr('loginErr','密碼需為 3 位數字');
   accLoad();const a=findAcc(id);busy=true;
   const h=a?await hashPin(a.salt,pin):null;busy=false;
+  const CL=window.gameHubCloud;
+  if(!a&&CL&&CL.remoteLogin){ // not on this device → try the cloud account (login on a new phone)
+    const btn=$('loginForm').querySelector('button[type=submit]'),bt=btn.textContent;
+    busy=true;btn.disabled=true;btn.textContent='☁️ 雲端登入中…';
+    let r;try{r=await CL.remoteLogin(id,pin)}catch(err){r={ok:false,err:'offline'}}
+    busy=false;btn.disabled=false;btn.textContent=bt;
+    if(r&&r.ok){closeSheet('authSheet');loadPlayer(id);toast('☁️ 已從雲端載入','歡迎回來，'+String(r.name).replace(/[<>&"]/g,''));return}
+    setPin('loginPin','');
+    return authErr('loginErr',r&&r.err==='offline'?'目前離線，只能登入這台裝置上的帳號':'帳號或密碼錯誤');
+  }
   if(!a||h!==a.hash){setPin('loginPin','');return authErr('loginErr','帳號或密碼錯誤')}
   closeSheet('authSheet');loadPlayer(a.id);
 });
@@ -712,6 +1010,11 @@ $('signupForm').addEventListener('submit',async e=>{
   accLoad();if(findAcc(id))return authErr('signupErr','帳號已存在');
   if(!PIN_RE.test(p1))return authErr('signupErr','密碼需為 3 位數字');
   if(p1!==p2){setPin('suPin2','');return authErr('signupErr','兩次輸入的密碼不一致')}
+  const CL=window.gameHubCloud;
+  if(CL&&CL.checkId){ // make sure the ID isn't already used in the cloud (≤1.5 s, skipped when offline)
+    const btn=$('signupForm').querySelector('button[type=submit]'),bt=btn.textContent;busy=true;btn.textContent='☁️ 檢查帳號中…';
+    let t=null;try{t=await CL.checkId(id)}catch(err){}busy=false;btn.textContent=bt;
+    if(t==='taken')return authErr('signupErr','這個帳號已被其他玩家使用，換一個吧')}
   busy=true;const salt=newSalt(),hash=await hashPin(salt,p1);busy=false;
   let migrated=false;
   if(!ACC.list.length){try{const old=localStorage.getItem(LEGACY_KEY);if(old&&!localStorage.getItem(LEGACY_KEY+':'+id)){localStorage.setItem(LEGACY_KEY+':'+id,old);migrated=true}}catch(err){}}
@@ -730,7 +1033,7 @@ $('nameRow').addEventListener('submit',e=>{
   e.preventDefault();const n=$('nameEdit').value.trim();
   if(!n)return authErr('nameErr','請輸入名稱');
   if([...n].length>12)return authErr('nameErr','名稱最多 12 個字');
-  accLoad();const a=findAcc(CUR.id);if(a){a.name=n;accSave();CUR=a}
+  accLoad();const a=findAcc(CUR.id);if(a){a.name=n;accSave();CUR=a;emit('rename',{name:n})}
   renderPlayer();$('nameRow').classList.add('hidden');$('nameErr').textContent='';
 });
 $('switchBtn').addEventListener('click',logout);
@@ -740,6 +1043,22 @@ function acctInit(){
   renderPlayer();
   if(ses&&findAcc(ses))loadPlayer(ses);else openAuth();
 }
+
+/* ---------- bridge for the optional cloud-sync layer ---------- */
+const clone=o=>JSON.parse(JSON.stringify(o));
+window.gameHubCore={
+  curId:()=>CUR?CUR.id:null,
+  accounts:()=>{accLoad();return ACC.list.slice()},
+  account:id=>{accLoad();return findAcc(id)||null},
+  addAccount:a=>{accLoad();if(!findAcc(a.id)){ACC.list.push(a);accSave()}},
+  hashPin,toast,
+  readLocal:id=>{if(CUR&&CUR.id===id)return clone(S);try{return JSON.parse(localStorage.getItem(LEGACY_KEY+':'+id))}catch(e){return null}},
+  writeLocal:(id,d)=>{ // apply merged cloud data; does NOT emit 'save'
+    if(CUR&&CUR.id===id){Object.assign(S,clone(d));if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
+      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderCoins();renderHome();return}
+    try{const k=LEGACY_KEY+':'+id,o=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify(Object.assign(o,clone(d))))}catch(e){}
+  }
+};
 
 /* ---------- init ---------- */
 renderCoins();renderHome();go('home');
@@ -764,6 +1083,397 @@ acctInit(); // daily login task fires after a player is logged in (see loadPlaye
     ['coins','taskList'].forEach(function(i){var e=g(i);if(e)mo.observe(e,{childList:true,characterData:true,subtree:true})});
   }
 })();
+</script>
+<script>
+/* ---------- leaderboard (排行榜) — add-on, read-only over existing storage ---------- */
+(function(){
+  var g=function(i){return document.getElementById(i)};
+  var GAMES={
+    tap:  {label:'點點點',  unit:'分',col:'分數',  dir:-1,play:'tap'},   // higher is better
+    simon:{label:'顏色記憶',unit:'關',col:'關卡',  dir:-1,play:'simon'}, // higher is better
+    guess:{label:'猜數字',  unit:'次',col:'次數',  dir:1, play:'guess'}, // LOWER is better
+    coins:{label:'金幣',    unit:'🪙',col:'金幣',  dir:-1,play:null}
+  };
+  var ORDER=['tap','simon','guess','coins'];
+  function readJSON(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+  function num(v){v=Number(v);return isFinite(v)?v:null}
+
+  /**
+   * Data source for the leaderboard. Returns (or resolves to) an array of
+   *   {id, name, value}
+   * containing only players who HAVE a record for `game`
+   * ('tap' | 'simon' | 'guess' | 'coins'). Order does not matter — the UI sorts.
+   * Swap this out for a cloud source later, e.g.
+   *   gameHubLeaderboard.setSource(game => fetchFromFirebase(game))
+   * (may return a Promise).
+   */
+  function getLeaderboardEntries(game){
+    var acc=readJSON('gameHub_accounts'),list=(acc&&Array.isArray(acc.list))?acc.list:[],out=[];
+    list.forEach(function(a){
+      if(!a||!a.id)return;
+      var d=readJSON('gameHub_v1:'+a.id)||{},b=d.best||{},v;
+      if(game==='coins')v=num(d.coins);else v=num(b[game]);
+      if(v==null||v<=0)return; // 0 / empty = no record (guess: 0 attempts is impossible)
+      out.push({id:a.id,name:a.name||a.id,value:v});
+    });
+    return out;
+  }
+  var source=getLeaderboardEntries;
+
+  function rank(game,entries){
+    var dir=GAMES[game].dir;
+    var arr=entries.slice().sort(function(x,y){return (x.value-y.value)*dir||String(x.name).localeCompare(String(y.name),'zh-Hant')||String(x.id).localeCompare(String(y.id))});
+    var prev=null,r=0;
+    arr.forEach(function(e,i){if(e.value!==prev){r=i+1;prev=e.value}e.rank=r});
+    return arr; // competition ranking: ties share a rank (1,1,3)
+  }
+  function me(){try{return localStorage.getItem('gameHub_session')}catch(e){return null}}
+  function initial(n){return Array.from(String(n||'').trim())[0]||'🙂'}
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  var MEDAL=['🥇','🥈','🥉'];
+  var cur='tap',reqId=0;
+
+  function renderList(game,entries){
+    var G=GAMES[game],list=g('lbList'),ses=me(),rows=rank(game,entries||[]);
+    list.innerHTML='';
+    g('lbColR').textContent=G.col;
+    g('lbCols').classList.toggle('hidden',!rows.length);
+    if(!rows.length){
+      var em=el('div','lb-empty');
+      em.appendChild(el('div','ei',game==='coins'?'🪙':'🏁'));
+      em.appendChild(el('b',null,game==='coins'?'還沒有人賺到金幣':'還沒有人有紀錄'));
+      em.appendChild(el('p',null,game==='coins'?'完成每日任務就能拿到金幣。':'玩一局「'+G.label+'」，成為第一名！'));
+      if(G.play){var pb=el('button',null,'去玩'+G.label+' ›');pb.type='button';pb.addEventListener('click',function(){close();var t=document.querySelector('[data-go="'+G.play+'"]');if(t)t.click()});em.appendChild(pb)}
+      list.appendChild(em);return;
+    }
+    rows.forEach(function(e){
+      var r=el('div','lb-row'+(e.rank<=3?' m m'+e.rank:'')+(e.id===ses?' me':''));
+      r.appendChild(el('span','lb-rank',e.rank<=3?MEDAL[e.rank-1]:String(e.rank)));
+      r.lastChild.setAttribute('aria-label','第 '+e.rank+' 名');
+      r.appendChild(el('span','lb-av',initial(e.name)));
+      var who=el('div','lb-who'),nm=el('b');nm.appendChild(el('span',null,e.name));
+      if(e.id===ses)nm.appendChild(el('i','lb-you','你'));
+      who.appendChild(nm);who.appendChild(el('small',null,'@'+e.id));r.appendChild(who);
+      var sc=el('span','lb-sc',String(e.value));sc.appendChild(el('small',null,G.unit));r.appendChild(sc);
+      list.appendChild(r);
+    });
+  }
+  function show(game){
+    cur=game;var i=ORDER.indexOf(game);
+    g('lbSeg').style.setProperty('--i',i);
+    document.querySelectorAll('#lbSeg [data-lb]').forEach(function(b){var on=b.dataset.lb===game;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+    var my=++reqId;
+    Promise.resolve().then(function(){return source(game)}).then(function(r){if(my===reqId)renderList(game,r)},function(){if(my===reqId)renderList(game,[])});
+  }
+  function countPlayers(){var a=readJSON('gameHub_accounts');return (a&&Array.isArray(a.list))?a.list.length:0}
+  function open(){
+    g('lbCount').textContent=countPlayers();
+    var w=g('lbSheet');w.classList.remove('hidden','closing');show(cur);
+  }
+  function close(){
+    var w=g('lbSheet');if(w.classList.contains('hidden'))return;
+    w.classList.add('closing');setTimeout(function(){w.classList.add('hidden');w.classList.remove('closing')},220);
+  }
+  // home entry: show the current player's best rank across the boards (local source only, sync)
+  var entryOverride=null; // set by the cloud layer (global rank text)
+  function syncEntry(){
+    if(entryOverride&&source!==getLeaderboardEntries){g('lbEntrySub').textContent=entryOverride.sub;g('lbEntryMeta').textContent=entryOverride.meta||'';return}
+    var n=countPlayers(),ses=me(),best=null;
+    if(ses&&n>1&&source===getLeaderboardEntries)ORDER.forEach(function(k){rank(k,getLeaderboardEntries(k)).forEach(function(e){if(e.id===ses&&(!best||e.rank<best.rank))best={rank:e.rank,k:k}})});
+    g('lbEntrySub').textContent=best?'你在「'+GAMES[best.k].label+'」排第 '+best.rank+' 名・共 '+n+' 位玩家':(n>1?'和這台裝置上的 '+n+' 位玩家比一比':'和這台裝置上的玩家比一比');
+    g('lbEntryMeta').textContent=best?'#'+best.rank:'';
+  }
+  g('lbOpen').addEventListener('click',open);
+  g('lbClose').addEventListener('click',close);
+  g('lbSheet').addEventListener('click',function(e){if(e.target===g('lbSheet'))close()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+  document.querySelectorAll('#lbSeg [data-lb]').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.lb)})});
+  syncEntry();
+  if(window.MutationObserver){
+    var mo=new MutationObserver(syncEntry);
+    ['taskList','heroName','recTap'].forEach(function(i){var e=g(i);if(e)mo.observe(e,{childList:true,characterData:true,subtree:true})});
+  }
+  window.gameHubLeaderboard={getLeaderboardEntries:getLeaderboardEntries,setSource:function(fn){source=typeof fn==='function'?fn:getLeaderboardEntries;syncEntry()},setEntry:function(o){entryOverride=o||null;syncEntry()},open:open,close:close,show:show,rank:rank};
+})();
+</script>
+<script type="module">
+/* ---------- ☁️ cloud sync + global leaderboard (Firebase) — add-on ----------
+   The game keeps working on localStorage alone; this layer only mirrors it to Firestore.
+   accounts/{id}            {name, salt, createdAt}           readable by signed-in users
+   accounts/{id}/members/{uid} {pinHash, joinedAt}            a device (anonymous uid) that proved the PIN
+   secrets/{id}             {pinHash}                         never readable; rules compare against it
+   players/{id}             {name, coins, best, streak, lastLogin, tasks, updatedAt}  public leaderboard data */
+const FB_VER='11.10.0',FB='https://www.gstatic.com/firebasejs/'+FB_VER+'/';
+const CFG={apiKey:"AIzaSyCNbBQlc2YmIOTOEv5Zb4i2NCltX5q0WqI",authDomain:"game-hub-cab1c.firebaseapp.com",projectId:"game-hub-cab1c",storageBucket:"game-hub-cab1c.firebasestorage.app",messagingSenderId:"97585118499",appId:"1:97585118499:web:4fe12b36860085454f2096"};
+const core=window.gameHubCore,$=i=>document.getElementById(i);
+const C=window.gameHubCloud={ready:false,denied:false,status:'loading'};
+const EMU=(()=>{try{return new URLSearchParams(location.search).get('emu')}catch(e){return null}})(); // test only: ?emu=127.0.0.1
+let F=null,app,auth,db,uid=null,chain=Promise.resolve(),loadFailed=false,lastPull=0;
+const T=(p,ms=10000)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej({code:'timeout'}),ms))]);
+const esc=s=>String(s).replace(/[<>&"]/g,'');
+
+/* ---- per-account sync meta (localStorage gameHub_cloud:<id>) ---- */
+const MK=id=>'gameHub_cloud:'+id;
+const getMeta=id=>{try{return JSON.parse(localStorage.getItem(MK(id)))||{}}catch(e){return{}}};
+const setMeta=(id,m)=>{try{localStorage.setItem(MK(id),JSON.stringify(Object.assign(getMeta(id),m)))}catch(e){}};
+
+/* ---- data shape + merge ---- */
+function int(v,lo,hi){if(v==null||v==='')return null;v=Number(v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,Math.round(v))):null}
+function clean(d){
+  d=d||{};const b=d.best||{},best={},tk=d.tasks||{};
+  const t=int(b.tap,0,1e7),s=int(b.simon,0,1e5),g=int(b.guess,0,100);
+  if(t!=null)best.tap=t;if(s!=null)best.simon=s;if(g!=null&&g>=1)best.guess=g;
+  const done=Array.isArray(tk.done)?[...new Set(tk.done.filter(x=>typeof x==='string'&&x.length<=20))].slice(0,8):[];
+  return{coins:int(d.coins,0,1e8)||0,best,streak:int(d.streak,0,1e5)||0,lastLogin:typeof d.lastLogin==='string'?d.lastLogin.slice(0,12):'',tasks:{date:typeof tk.date==='string'?tk.date.slice(0,12):'',done}};
+}
+const dnum=s=>{const m=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s||'');return m?new Date(+m[1],m[2]-1,+m[3]).getTime():0};
+const nextDay=(a,b)=>{const d=new Date(a);d.setDate(d.getDate()+1);return d.getTime()===b};
+function mergeBest(a,b){
+  const o={},mx=(x,y)=>x==null?y:y==null?x:Math.max(x,y);
+  const t=mx(a.tap,b.tap),s=mx(a.simon,b.simon),g=[a.guess,b.guess].filter(v=>v>0);
+  if(t!=null)o.tap=t;if(s!=null)o.simon=s;if(g.length)o.guess=Math.min(...g);return o;
+}
+/* remote = cloud doc, local = this device, base = cloud coins at our last successful sync.
+   coins: cloud + what this device earned since then (never loses coins earned on either phone);
+   best: per game max / max / min>0; streak & tasks: the later day wins (same day → max / union). */
+function merge(remote,local,base){
+  if(!remote)return clean(local);if(!local)return clean(remote);
+  const r=clean(remote),l=clean(local);
+  const coins=base==null?Math.max(r.coins,l.coins):r.coins+Math.max(0,l.coins-base);
+  const rd=dnum(r.lastLogin),ld=dnum(l.lastLogin);let lastLogin,streak;
+  if(rd===ld){lastLogin=r.lastLogin||l.lastLogin;streak=Math.max(r.streak,l.streak)}
+  else{const[n,o]=rd>ld?[r,l]:[l,r];lastLogin=n.lastLogin;streak=n.streak;if(Math.min(rd,ld)&&nextDay(Math.min(rd,ld),Math.max(rd,ld)))streak=Math.max(n.streak,o.streak+1)}
+  const rt=dnum(r.tasks.date),lt=dnum(l.tasks.date);
+  const tasks=rt===lt?{date:r.tasks.date||l.tasks.date,done:[...new Set([...r.tasks.done,...l.tasks.done])].slice(0,8)}:(rt>lt?r.tasks:l.tasks);
+  return{coins,best:mergeBest(r.best,l.best),streak,lastLogin,tasks};
+}
+const sameData=(a,b)=>JSON.stringify(clean(a))===JSON.stringify(clean(b));
+const nameOf=id=>{const a=core.account(id);return String((a&&a.name)||id).slice(0,24)};
+function toDoc(d,name){d=clean(d);return{name,coins:d.coins,best:d.best,streak:d.streak,lastLogin:d.lastLogin,tasks:d.tasks,updatedAt:F.serverTimestamp()}}
+
+/* ---- status pill + texts ---- */
+const TXT={loading:'☁️ 連線中…',sync:'☁️ 同步中…',ok:'☁️ 已同步',online:'☁️ 已連線',off:'☁️ 離線',local:'📱 僅本機'};
+function view(){
+  const cur=core.curId();let s=C.status;
+  if(cur&&getMeta(cur).link==='conflict')s='local';
+  else if(s==='ok'&&!cur)s='online';
+  else if(s==='ok'&&cur&&getMeta(cur).dirty)s='sync';
+  return s;
+}
+function paint(){
+  const s=view(),p=$('syncPill'),cur=core.curId();
+  if(p){p.classList.remove('hidden');p.dataset.s=s;$('syncTxt').textContent=TXT[s];p.setAttribute('aria-label','雲端同步狀態：'+TXT[s].slice(2))}
+  const a=$('acctCloud');
+  if(a&&cur){a.dataset.s=s;a.textContent=s==='local'?'📱 這個帳號 ID 已被其他玩家使用，只保存在這台裝置':
+    s==='off'?(C.denied?'☁️ 雲端暫時無法使用，進度先存在這台裝置':'☁️ 離線中，連上網路後會自動同步'):
+    s==='ok'?'☁️ 已同步・換手機用 @'+cur+' ＋ 密碼就能登入':'☁️ 正在同步到雲端…'}
+  const n=$('lbNote');
+  if(n)n.textContent=cloudOn()?'🌐 顯示所有玩家的雲端紀錄・每項前 50 名':'目前離線，只顯示這台裝置上的帳號；連上網路後會顯示所有玩家。';
+}
+const cloudOn=()=>C.ready&&!C.denied&&C.status!=='off';
+let srcOn=false; // which source the leaderboard currently uses
+function setStatus(s){
+  C.status=s;const on=cloudOn();
+  if(on!==srcOn&&window.gameHubLeaderboard){srcOn=on;
+    if(on)window.gameHubLeaderboard.setSource(board);else{window.gameHubLeaderboard.setEntry&&window.gameHubLeaderboard.setEntry(null);window.gameHubLeaderboard.setSource(null)}
+  }
+  paint();
+}
+function handleErr(e,where){
+  const c=e&&e.code;
+  if(c==='permission-denied'){if(!C.denied)console.warn('[gameHub cloud] Firestore 拒絕存取（安全規則尚未發布？）',where||'');C.denied=true;C.deniedAt=Date.now()}
+  setStatus('off');
+}
+
+/* ---- boot ---- */
+async function boot(){
+  if(C.booting||loadFailed)return;C.booting=true;setStatus('loading');
+  try{
+    if(!F){
+      let m;try{m=await T(Promise.all(['firebase-app','firebase-auth','firebase-firestore'].map(x=>import(FB+x+'.js'))),20000)}
+      catch(e){loadFailed=true;throw e}
+      F=Object.assign({},...m);
+      try{F.setLogLevel&&F.setLogLevel('silent')}catch(e){}
+      app=F.initializeApp(CFG);auth=F.getAuth(app);db=F.getFirestore(app);
+      if(EMU){F.connectAuthEmulator(auth,'http://'+EMU+':9099',{disableWarnings:true});F.connectFirestoreEmulator(db,EMU,8080)}
+    }
+    if(auth.authStateReady)await T(auth.authStateReady(),10000);
+    if(!auth.currentUser)await T(F.signInAnonymously(auth),12000);
+    uid=auth.currentUser.uid;C.ready=true;C.denied=false;
+    await queue(afterReady);
+  }catch(e){if(loadFailed)console.warn('[gameHub cloud] Firebase 載入失敗，改用離線模式');handleErr(e,'boot')}
+  finally{C.booting=false}
+}
+function queue(fn){const p=chain.then(fn);chain=p.catch(()=>{});return p}
+async function afterReady(){
+  setStatus('sync');
+  const cur=core.curId();
+  try{
+    for(const a of core.accounts()){                       // migration: upload local accounts not yet in the cloud
+      const m=getMeta(a.id);
+      try{
+        if(!m.link)await ensureLinked(a.id);
+        if(getMeta(a.id).link==='linked'&&(a.id===cur||m.dirty||!m.link))await doSync(a.id);
+      }catch(e){if(C.denied||(e&&(e.code==='permission-denied'||e.code==='timeout'||e.code==='unavailable')))throw e;console.warn('[gameHub cloud] sync skipped',a.id,e&&e.message)}
+    }
+    if(!C.denied)setStatus('ok');
+    prefetch();
+  }catch(e){handleErr(e,'migrate')}
+}
+const memRef=id=>F.doc(db,'accounts',id,'members',uid);
+const join=(id,hash,ms)=>T(F.setDoc(memRef(id),{pinHash:hash,joinedAt:F.serverTimestamp()}),ms||12000);
+function markConflict(id){
+  const m=getMeta(id);setMeta(id,{link:'conflict',dirty:false});
+  if(!m.notified){setMeta(id,{notified:true});core.toast('⚠️ 帳號 @'+esc(id)+' 已被其他玩家使用','這個帳號只會保存在這台裝置，不會同步到雲端')}
+  paint();return'conflict';
+}
+/* make sure accounts/{id} exists in the cloud and this device may write players/{id} */
+async function ensureLinked(id){
+  const m=getMeta(id);if(m.link==='linked'||m.link==='conflict')return m.link;
+  const a=core.account(id);if(!a)return null;
+  const snap=await T(F.getDoc(F.doc(db,'accounts',id)));
+  if(!snap.exists()){
+    const d=clean(core.readLocal(id)),b=F.writeBatch(db);
+    b.set(F.doc(db,'accounts',id),{name:nameOf(id),salt:a.salt,createdAt:F.serverTimestamp()});
+    b.set(F.doc(db,'secrets',id),{pinHash:a.hash});
+    b.set(memRef(id),{pinHash:a.hash,joinedAt:F.serverTimestamp()});
+    b.set(F.doc(db,'players',id),toDoc(d,nameOf(id)));
+    try{await b.commit()}catch(e){
+      if(e&&e.code==='permission-denied'){const again=await T(F.getDoc(F.doc(db,'accounts',id)));if(again.exists()&&again.data().salt!==a.salt)return markConflict(id);console.warn('[gameHub cloud] 無法建立雲端帳號',id,e.message);return null}
+      throw e;
+    }
+    const ch=!sameData(clean(core.readLocal(id)),d);setMeta(id,{link:'linked',base:d.coins,at:Date.now(),dirty:ch});if(ch)schedule(id,300);paint();return'linked';
+  }
+  if(snap.data().salt===a.salt){           // same account (created from this device earlier) → re-join with the saved hash
+    try{await join(id,a.hash);setMeta(id,{link:'linked'});return'linked'}catch(e){if(!e||e.code!=='permission-denied')throw e}
+  }
+  return markConflict(id);
+}
+/* one round of read-merge-write for players/{id}, inside a transaction */
+async function doSync(id){
+  if(!C.ready||C.denied)return;
+  if(await ensureLinked(id)!=='linked')return;
+  const snapL=core.readLocal(id);if(!snapL)return;
+  if(core.curId()===id)setStatus('sync');
+  const ref=F.doc(db,'players',id),base=getMeta(id).base,name=nameOf(id);let merged;
+  const run=()=>F.runTransaction(db,async tx=>{
+    const s=await tx.get(ref),r=s.exists()?s.data():null;
+    merged=merge(r,snapL,base);
+    if(!r||!sameData(r,merged)||r.name!==name)tx.set(ref,toDoc(merged,name));
+  });
+  try{await run()}catch(e){
+    if(!e||e.code!=='permission-denied')throw e;
+    // lost write access (browser data cleared / account re-created): re-join once with the saved PIN hash
+    const acc=await T(F.getDoc(F.doc(db,'accounts',id)));
+    if(!acc.exists()){setMeta(id,{link:null,base:null});if(await ensureLinked(id)!=='linked')return}
+    else{try{await join(id,core.account(id).hash)}catch(e2){if(e2&&e2.code==='permission-denied')return markConflict(id);throw e2}}
+    await run();
+  }
+  const now=core.readLocal(id),fin=merge(merged,now,clean(snapL).coins);
+  core.writeLocal(id,fin);
+  const pending=!sameData(fin,merged);
+  setMeta(id,{base:merged.coins,at:Date.now(),dirty:pending});lastPull=Date.now();
+  if(pending)schedule(id,800);
+  if(!C.denied)setStatus('ok');
+}
+const timers={};
+function schedule(id,ms){clearTimeout(timers[id]);timers[id]=setTimeout(()=>{delete timers[id];syncNow(id)},ms==null?1500:ms)}
+function syncNow(id){if(!C.ready||C.denied)return Promise.resolve();return queue(()=>doSync(id)).catch(e=>{setMeta(id,{dirty:true});handleErr(e,'sync')})}
+
+/* ---- login on a new device / id check for sign-up ---- */
+async function whenReady(ms){const t=Date.now();while(!C.ready&&(C.booting||C.status==='loading')&&Date.now()-t<ms)await new Promise(r=>setTimeout(r,100));return C.ready&&!C.denied}
+C.remoteLogin=async(id,pin)=>{
+  if(!await whenReady(5000))return{ok:false,err:'offline'};
+  let snap;try{snap=await T(F.getDoc(F.doc(db,'accounts',id)),8000)}catch(e){handleErr(e,'login');return{ok:false,err:'offline'}}
+  if(!snap.exists())return{ok:false,err:'nf'};
+  const{name,salt}=snap.data(),hash=await core.hashPin(salt,pin);
+  try{await join(id,hash,10000)}catch(e){if(e&&e.code==='permission-denied')return{ok:false,err:'pin'};handleErr(e,'join');return{ok:false,err:'offline'}}
+  let data=null;try{const p=await T(F.getDoc(F.doc(db,'players',id)),8000);if(p.exists())data=clean(p.data())}catch(e){}
+  core.addAccount({id,name:String(name||id),salt,hash,created:Date.now()});
+  if(data)core.writeLocal(id,data);
+  setMeta(id,{link:'linked',base:data?data.coins:0,at:Date.now(),dirty:false});
+  return{ok:true,name:String(name||id)};
+};
+const idCache={};
+C.checkId=async(id,ms)=>{
+  if(!C.ready||C.denied)return null;const c=idCache[id];if(c&&(c.v==='taken'||Date.now()-c.t<20000))return c.v;
+  try{const s=await T(F.getDoc(F.doc(db,'accounts',id)),ms||1500);const v=s.exists()?'taken':'free';idCache[id]={v,t:Date.now()};return v}
+  catch(e){if(e&&e.code==='permission-denied')handleErr(e,'check');return null}
+};
+
+/* ---- global leaderboard source ---- */
+const QF={tap:['best.tap','desc'],simon:['best.simon','desc'],guess:['best.guess','asc'],coins:['coins','desc']};
+const boards={};let total=null,totalAt=0;
+async function cloudBoard(game){
+  const[f,dir]=QF[game];
+  const s=await T(F.getDocs(F.query(F.collection(db,'players'),F.where(f,'>',0),F.orderBy(f,dir),F.limit(50))),8000);
+  return s.docs.map(d=>{const x=d.data(),v=game==='coins'?x.coins:(x.best||{})[game];return{id:d.id,name:String(x.name||d.id),value:Number(v)}}).filter(e=>Number.isFinite(e.value)&&e.value>0);
+}
+async function countAll(){
+  if(total!=null&&Date.now()-totalAt<60000)return total;
+  try{const c=await T(F.getCountFromServer(F.collection(db,'players')),8000);total=c.data().count;totalAt=Date.now()}catch(e){}
+  return total;
+}
+const localBoard=g=>window.gameHubLeaderboard.getLeaderboardEntries(g);
+async function board(game){
+  if(!cloudOn())return localBoard(game);
+  try{
+    const list=await cloudBoard(game),cur=core.curId();
+    if(cur&&getMeta(cur).link==='linked'){            // show my newest local score even before the debounced write lands
+      const L=localBoard(game).find(e=>e.id===cur),i=list.findIndex(e=>e.id===cur);
+      if(L){if(i<0)list.push(L);else if(game==='guess'?L.value<list[i].value:L.value>list[i].value)list[i]=Object.assign({},list[i],{value:L.value})}
+    }
+    boards[game]=list;
+    countAll().then(n=>{if(n!=null&&$('lbCount'))$('lbCount').textContent=Math.max(n,list.length)});
+    entry();return list;
+  }catch(e){handleErr(e,'board');return localBoard(game)}
+}
+function entry(){
+  const LB=window.gameHubLeaderboard;if(!LB||!LB.setEntry||!cloudOn())return;
+  const cur=core.curId(),L={tap:'點點點',simon:'顏色記憶',guess:'猜數字',coins:'金幣'};let best=null;
+  if(cur)Object.keys(boards).forEach(k=>LB.rank(k,boards[k]).forEach(e=>{if(e.id===cur&&(!best||e.rank<best.rank))best={rank:e.rank,k}}));
+  const n=total!=null?'・全球 '+total+' 位玩家':'';
+  LB.setEntry(best?{sub:'你在「'+L[best.k]+'」全球第 '+best.rank+' 名'+n,meta:'#'+best.rank}:{sub:'🌐 和所有玩家一起比'+n,meta:''});
+}
+let preAt=0;
+async function prefetch(){
+  if(!cloudOn()||Date.now()-preAt<120000)return;preAt=Date.now();
+  try{await countAll();for(const g of Object.keys(QF))boards[g]=await cloudBoard(g);entry()}catch(e){handleErr(e,'prefetch')}
+}
+
+/* ---- hooks from the game ---- */
+document.addEventListener('gamehub:save',e=>{const id=e.detail&&e.detail.id;if(!id)return;if(getMeta(id).link!=='conflict'){setMeta(id,{dirty:true});if(cloudOn())schedule(id)}paint()});
+document.addEventListener('gamehub:login',e=>{const id=e.detail&&e.detail.id;paint();if(id&&C.ready&&!C.denied)syncNow(id).then(()=>{preAt=0;prefetch()})});
+document.addEventListener('gamehub:logout',()=>{paint();entry()});
+document.addEventListener('gamehub:rename',e=>{const id=e.detail&&e.detail.id;if(!id||!cloudOn()||getMeta(id).link!=='linked')return;
+  queue(()=>F.updateDoc(F.doc(db,'accounts',id),{name:nameOf(id)})).catch(()=>{});setMeta(id,{dirty:true});schedule(id,300)});
+document.addEventListener('visibilitychange',()=>{
+  const cur=core.curId();
+  if(document.visibilityState==='hidden'){Object.keys(timers).forEach(id=>{clearTimeout(timers[id]);delete timers[id];syncNow(id)});return}
+  if(!C.ready)return;
+  if(C.denied&&Date.now()-C.deniedAt>60000){C.denied=false;queue(afterReady).catch(()=>{});return}
+  if(cur&&!C.denied&&Date.now()-lastPull>15000)syncNow(cur);          // pick up progress made on another phone
+});
+addEventListener('online',()=>{if(!C.ready)boot();else{C.denied=false;queue(afterReady).catch(()=>{})}});
+addEventListener('offline',()=>setStatus('off'));
+let sut=null;
+$('suId')&&$('suId').addEventListener('input',()=>{clearTimeout(sut);const id=$('suId').value.trim().toLowerCase();
+  if(!/^[a-z0-9]{3,20}$/.test(id))return;sut=setTimeout(async()=>{if(await C.checkId(id,4000)==='taken'&&$('suId').value.trim().toLowerCase()===id&&!$('signupErr').textContent)$('signupErr').textContent='這個帳號已被其他玩家使用，換一個吧'},450)});
+$('syncPill')&&$('syncPill').addEventListener('click',()=>{
+  const s=view();
+  if(s==='ok'||s==='online')core.toast('☁️ 雲端同步已開啟','進度會自動同步，換手機用帳號＋密碼登入');
+  else if(s==='local')core.toast('📱 只保存在這台裝置','這個帳號 ID 在雲端已被其他玩家使用');
+  else if(s==='off'){core.toast('☁️ 目前離線','進度先存在這台裝置，連線後會自動同步'+(loadFailed?'（請重新開啟頁面）':''));if(!loadFailed){if(!C.ready)boot();else{C.denied=false;queue(afterReady).catch(()=>{})}}}
+  else core.toast('☁️ 同步中…','正在把進度存到雲端');
+});
+/* test helpers (used by /tmp/gh3/cloudtest.mjs) */
+C._t={uid:()=>uid,meta:getMeta,flush:()=>chain,sync:id=>syncNow(id||core.curId()),board:g=>cloudBoard(g),
+  async del(id){const b=F.writeBatch(db);['players','secrets','accounts'].forEach(c=>b.delete(F.doc(db,c,id)));b.delete(memRef(id));await b.commit();localStorage.removeItem(MK(id))},
+  async leave(id){await F.deleteDoc(memRef(id))},
+  async get(c,id){const s=await F.getDoc(F.doc(db,c,id));return s.exists()?JSON.parse(JSON.stringify(s.data())):null},
+  fb:()=>({F,db,uid})};
+
+if(core){paint();boot()}
 </script>
 </body>
 </html>
