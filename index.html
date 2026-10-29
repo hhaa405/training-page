@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#2a1060">
+<title>小遊戲合集</title>
+<style>
+:root{
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);
+  --topH:60px;
+  --ink:#f5f3ff;--muted:rgba(235,230,255,.72);--dim:rgba(235,230,255,.5);
+  --glass:rgba(255,255,255,.09);--glass2:rgba(255,255,255,.14);--line:rgba(255,255,255,.16);
+  --pink:#ff4f9a;--orange:#ff9f1c;--yellow:#ffd23f;--blue:#3a86ff;--cyan:#00d4e6;--green:#2fd98a;--violet:#8b5cf6;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--ink);touch-action:manipulation;-webkit-font-smoothing:antialiased}
+body{background:#1a1040;background:linear-gradient(135deg,#1b0f45 0%,#3a1170 35%,#7a1d6e 70%,#1d2a7a 100%);background-size:300% 300%;animation:bgshift 22s ease-in-out infinite}
+@keyframes bgshift{0%,100%{background-position:0% 30%}50%{background-position:100% 70%}}
+/* decorative blobs */
+.bg-blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-blobs i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:float 18s ease-in-out infinite}
+.bg-blobs i:nth-child(1){width:320px;height:320px;background:#ff4f9a;top:-80px;left:-100px}
+.bg-blobs i:nth-child(2){width:300px;height:300px;background:#00c2d1;bottom:-90px;right:-110px;animation-delay:-6s}
+.bg-blobs i:nth-child(3){width:240px;height:240px;background:#ffb21c;top:40%;left:55%;opacity:.35;animation-delay:-12s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,30px) scale(1.1)}66%{transform:translate(-30px,20px) scale(.92)}}
+button{font-family:inherit;font-weight:800;border:none;cursor:pointer;user-select:none;-webkit-user-select:none;color:inherit;transition:transform .15s cubic-bezier(.3,1.6,.5,1),box-shadow .2s,filter .2s,background .2s}
+button:active{transform:scale(.95)}
+button:focus-visible{outline:3px solid rgba(255,210,63,.9);outline-offset:3px}
+button:disabled{filter:grayscale(.7) brightness(.8);cursor:not-allowed}
+
+/* buttons */
+.btn{position:relative;overflow:hidden;font-size:19px;letter-spacing:1px;padding:15px 40px;border-radius:999px;color:#fff;
+  background:linear-gradient(135deg,#ff4f9a 0%,#ff7a59 55%,#ffb21c 100%);
+  box-shadow:0 10px 24px -6px rgba(255,79,154,.65),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.15);text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3.2s ease-in-out infinite}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
+.btn:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.btn:active{transform:translateY(2px) scale(.96);box-shadow:0 4px 10px -4px rgba(255,79,154,.7),inset 0 2px 4px rgba(0,0,0,.2)}
+.btn.blue{background:linear-gradient(135deg,#3a86ff 0%,#5b6cff 45%,#00d4e6 100%);box-shadow:0 10px 24px -6px rgba(58,134,255,.65),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.15)}
+.btn.blue:active{box-shadow:0 4px 10px -4px rgba(58,134,255,.7),inset 0 2px 4px rgba(0,0,0,.2)}
+
+/* top bar */
+#top{position:fixed;top:0;left:0;right:0;height:calc(var(--topH) + var(--sat));padding:var(--sat) calc(14px + var(--sar)) 0 calc(14px + var(--sal));display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:rgba(20,10,50,.45);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--line);box-shadow:0 8px 24px -12px rgba(0,0,0,.5);z-index:20}
+#top .title{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:20px;font-weight:900;letter-spacing:.5px;color:#fff}
+#backBtn{flex:none;font-size:15px;padding:9px 14px;border-radius:999px;background:var(--glass2);color:#fff;border:1px solid var(--line);box-shadow:0 4px 12px -4px rgba(0,0,0,.4)}
+#backBtn:hover{background:rgba(255,255,255,.22)}
+#coins{flex:none;font-size:16px;font-weight:900;color:#3b2500;padding:7px 13px;border-radius:999px;background:linear-gradient(135deg,#ffe066,#ffb21c);box-shadow:0 6px 16px -6px rgba(255,178,28,.8),inset 0 1px 0 rgba(255,255,255,.6);white-space:nowrap}
+.view{position:fixed;top:calc(var(--topH) + var(--sat));left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:1;padding-left:var(--sal);padding-right:var(--sar)}
+.hidden{display:none!important}
+.view{scrollbar-width:none}.view::-webkit-scrollbar{display:none}
+.view:not(.hidden){animation:viewIn .35s ease-out}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}}
+
+/* home */
+#home{padding:18px calc(16px + var(--sar)) calc(40px + var(--sab)) calc(16px + var(--sal));max-width:560px;margin:0 auto}
+.hero{position:relative;overflow:hidden;border-radius:26px;padding:20px 18px 18px;margin-bottom:18px;
+  background:linear-gradient(135deg,rgba(255,79,154,.9),rgba(139,92,246,.9) 55%,rgba(58,134,255,.9));
+  box-shadow:0 18px 40px -16px rgba(255,79,154,.6),inset 0 1px 0 rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.2)}
+.hero::before{content:"";position:absolute;width:180px;height:180px;right:-50px;top:-60px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.35),transparent 70%)}
+.hero::after{content:"🎮";position:absolute;right:14px;top:10px;font-size:54px;transform:rotate(12deg);opacity:.9;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:rotate(12deg) translateY(0)}50%{transform:rotate(6deg) translateY(-6px)}}
+.hero .hello{position:relative;font-size:14px;font-weight:700;color:rgba(255,255,255,.85)}
+.hero .hero-title{position:relative;font-size:27px;font-weight:900;line-height:1.2;margin:4px 0 16px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.2);padding-right:64px}
+.hero-stats{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:18px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);min-width:0}
+.stat .si{font-size:24px;flex:none}
+.stat small{display:block;font-size:12px;color:rgba(255,255,255,.8);font-weight:700}
+.stat b{display:block;font-size:20px;font-weight:900;color:#fff;white-space:nowrap}
+.cards{display:grid;gap:14px}
+.card{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;padding:16px 40px 16px 20px;border-radius:24px;text-align:left;width:100%;font-size:inherit;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.06));border:1px solid var(--line);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 14px 30px -14px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18)}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--acc,linear-gradient(#ff4f9a,#ffb21c))}
+.card::after{content:"›";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:30px;font-weight:900;color:rgba(255,255,255,.45);transition:transform .2s,color .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 20px 36px -14px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.25)}
+.card:hover::after{transform:translate(4px,-50%);color:#fff}
+.card:active{transform:scale(.97)}
+.card[data-go="tap"]{--acc:linear-gradient(#ff4f9a,#ff9f1c);--g:#ff4f9a}
+.card[data-go="simon"]{--acc:linear-gradient(#8b5cf6,#3a86ff);--g:#6d7cff}
+.card[data-go="guess"]{--acc:linear-gradient(#2fd98a,#00d4e6);--g:#2fd98a}
+.card .ic{flex:none;font-size:34px;width:62px;height:62px;border-radius:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 20px -8px var(--g),inset 0 1px 0 rgba(255,255,255,.5)}
+.card[data-go="tap"] .ic{background:linear-gradient(135deg,#ff7ab6,#ff9f1c)!important}
+.card[data-go="simon"] .ic{background:linear-gradient(135deg,#a78bfa,#3a86ff)!important}
+.card[data-go="guess"] .ic{background:linear-gradient(135deg,#5ef0a8,#00b8d9)!important}
+.card h3{font-size:20px;font-weight:900;letter-spacing:.5px}
+.card p{font-size:14px;color:var(--muted);font-weight:500;margin-top:4px;line-height:1.4}
+h2{display:flex;align-items:center;gap:6px;font-size:18px;font-weight:900;margin:26px 4px 12px;color:#fff;letter-spacing:.5px}
+h2::after{content:"";flex:1;height:2px;margin-left:8px;border-radius:2px;background:linear-gradient(90deg,rgba(255,255,255,.35),transparent)}
+.records{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rec{position:relative;overflow:hidden;border-radius:20px;padding:14px 6px 12px;text-align:center;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 10px 22px -14px rgba(0,0,0,.6)}
+.rec::before{content:"";position:absolute;left:18%;right:18%;top:0;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,#ff4f9a,#ffb21c)}
+.rec:nth-child(2)::before{background:linear-gradient(90deg,#8b5cf6,#3a86ff)}
+.rec:nth-child(3)::before{background:linear-gradient(90deg,#2fd98a,#00d4e6)}
+.rec span{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+.rec b{display:block;font-size:22px;font-weight:900;margin-top:4px;white-space:nowrap;background:linear-gradient(90deg,#ffd23f,#ff8fc4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tprog{display:flex;align-items:center;gap:10px;margin:-2px 4px 12px}
+.tbar{flex:1;height:10px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.3)}
+.tbar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#2fd98a,#ffd23f,#ff4f9a);background-size:200% 100%;transition:width .6s cubic-bezier(.3,1.3,.5,1);box-shadow:0 0 12px rgba(255,210,63,.6)}
+.tprog span{font-size:13px;font-weight:900;color:var(--muted);white-space:nowrap}
+.task{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:18px;padding:14px 16px;margin-bottom:10px;font-size:15px;font-weight:600;line-height:1.4;
+  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 20px -14px rgba(0,0,0,.6);transition:opacity .3s,transform .2s;animation:taskIn .4s ease-out backwards}
+.task:nth-child(2){animation-delay:.05s}.task:nth-child(3){animation-delay:.1s}.task:nth-child(4){animation-delay:.15s}
+@keyframes taskIn{from{opacity:0;transform:translateX(-10px)}}
+.task .r{flex:none;font-weight:900;font-size:14px;color:#3b2500;white-space:nowrap;margin-left:0;padding:5px 11px;border-radius:999px;background:linear-gradient(135deg,#ffe066,#ffb21c);box-shadow:0 4px 10px -4px rgba(255,178,28,.8)}
+.task.done{opacity:.7;background:rgba(47,217,138,.1);border-color:rgba(47,217,138,.35)}
+.task.done>span:first-child{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.35)}
+.task.done .r{color:#fff;background:linear-gradient(135deg,#2fd98a,#14b8a6);box-shadow:0 4px 10px -4px rgba(47,217,138,.8)}
+.note{font-size:13px;color:var(--dim);text-align:center;margin-top:18px;line-height:1.7}
+
+/* overlays */
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:10;text-align:center;padding:24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
+  background:radial-gradient(circle at 50% 35%,rgba(139,92,246,.35),rgba(20,10,50,.82) 70%);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:fadeIn .3s ease-out}
+.overlay>*{animation:popIn .5s cubic-bezier(.3,1.5,.5,1) backwards}
+.overlay>*:nth-child(2){animation-delay:.06s}.overlay>*:nth-child(3){animation-delay:.12s}.overlay>*:nth-child(4){animation-delay:.18s}.overlay>*:nth-child(5){animation-delay:.24s}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.7) translateY(16px)}}
+.overlay h1{font-size:40px;font-weight:900;letter-spacing:3px;background:linear-gradient(90deg,#ffd23f,#ff4f9a 50%,#8b9bff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 18px rgba(255,79,154,.45))}
+.overlay p{font-size:16px;line-height:1.75;color:var(--muted);max-width:330px}
+.big{font-size:60px;font-weight:900;line-height:1.1;background:linear-gradient(180deg,#fff,#9fd0ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 20px rgba(58,134,255,.6))}
+
+/* tap game */
+#tap{overflow:hidden;touch-action:none}
+.hud{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;padding:0;font-size:15px;font-weight:800;background:none;z-index:2}
+.hud>span{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;padding:8px 6px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 14px -8px rgba(0,0,0,.5)}
+.hud b{font-size:18px;color:#ffd23f}
+.hud>span:nth-child(1) b{color:#ff8fc4}
+.hud>span:nth-child(2) b{color:#ff6b8b}
+.hud>span:nth-child(3) b{color:#7cd4ff}
+#field{position:absolute;top:62px;left:0;right:0;bottom:var(--sab);
+  background-image:radial-gradient(rgba(255,255,255,.08) 1.5px,transparent 1.6px);background-size:26px 26px}
+.dot{position:absolute;border-radius:50%;cursor:pointer;
+  background-image:radial-gradient(circle at 32% 28%,rgba(255,255,255,.75),rgba(255,255,255,0) 42%)!important;
+  box-shadow:0 0 22px 2px currentColor,0 6px 14px rgba(0,0,0,.35),inset 0 -5px 0 rgba(0,0,0,.15);animation:pop .22s cubic-bezier(.3,1.7,.5,1);touch-action:none}
+.dot .ring{position:absolute;inset:-7px;border-radius:50%;border:3px solid currentColor;pointer-events:none;box-shadow:0 0 10px currentColor}
+@keyframes pop{from{transform:scale(.2)}to{transform:scale(1)}}
+.burst{position:absolute;pointer-events:none;font-weight:900;font-size:22px;color:#ffd23f;text-shadow:0 0 10px rgba(255,79,154,.9),0 2px 0 #b3195f;animation:up .6s ease-out forwards;z-index:3}
+@keyframes up{0%{transform:translateY(0) scale(.8)}30%{transform:translateY(-12px) scale(1.25)}100%{transform:translateY(-44px) scale(1);opacity:0}}
+#flash{position:absolute;inset:0;background:radial-gradient(circle,transparent 40%,rgba(255,30,80,.45));pointer-events:none;opacity:0;transition:opacity .2s;z-index:4}
+
+/* simon */
+#simon{display:flex;flex-direction:column;align-items:center;padding:18px 16px calc(24px + var(--sab))}
+#simonInfo{font-size:22px;font-weight:900;margin:6px 0 8px;padding:8px 22px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#sLevel{display:inline-block;min-width:1ch;font-size:26px;background:linear-gradient(90deg,#ffd23f,#ff7ab6);-webkit-background-clip:text;background-clip:text;color:transparent}
+#simonMsg{font-size:15px;font-weight:700;color:var(--muted);height:22px;margin-bottom:16px}
+#pads{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:min(86vw,380px);aspect-ratio:1;padding:14px;border-radius:36px;background:rgba(0,0,0,.22);border:1px solid var(--line);box-shadow:inset 0 4px 20px rgba(0,0,0,.4),0 20px 40px -20px rgba(0,0,0,.6)}
+.pad{position:relative;overflow:hidden;border-radius:26px;opacity:1;filter:saturate(.55) brightness(.55);transition:filter .12s,transform .12s,box-shadow .12s;box-shadow:inset 0 -6px 0 rgba(0,0,0,.25),0 6px 14px rgba(0,0,0,.3)}
+.pad:nth-child(1){border-top-left-radius:48px}.pad:nth-child(2){border-top-right-radius:48px}
+.pad:nth-child(3){border-bottom-left-radius:48px}.pad:nth-child(4){border-bottom-right-radius:48px}
+.pad::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 50%);pointer-events:none}
+.pad.on{opacity:1;transform:scale(1.04);filter:saturate(1.2) brightness(1.2)}
+.pad[data-i="0"].on{box-shadow:0 0 34px 8px rgba(255,79,129,.85),inset 0 0 20px rgba(255,255,255,.6)}
+.pad[data-i="1"].on{box-shadow:0 0 34px 8px rgba(58,134,255,.85),inset 0 0 20px rgba(255,255,255,.6)}
+.pad[data-i="2"].on{box-shadow:0 0 34px 8px rgba(255,195,0,.85),inset 0 0 20px rgba(255,255,255,.6)}
+.pad[data-i="3"].on{box-shadow:0 0 34px 8px rgba(43,182,115,.85),inset 0 0 20px rgba(255,255,255,.6)}
+#pads:not(.lock) .pad{filter:saturate(.8) brightness(.78)}
+#pads:not(.lock) .pad.on{filter:saturate(1.2) brightness(1.2)}
+#pads.lock .pad{pointer-events:none}
+
+/* guess */
+#guess{display:flex;flex-direction:column;align-items:center;padding:24px 18px calc(30px + var(--sab))}
+#guess .q{font-size:64px;width:116px;height:116px;display:flex;align-items:center;justify-content:center;margin:4px 0 12px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.35),rgba(255,255,255,.08));border:1px solid var(--line);box-shadow:0 0 0 8px rgba(255,255,255,.05),0 16px 40px -12px rgba(139,92,246,.8);animation:bob2 3s ease-in-out infinite}
+@keyframes bob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#guess>p{color:var(--muted)!important;font-weight:700;text-align:center}
+#guessHint{font-size:24px;font-weight:900;min-height:34px;margin:12px 0;text-align:center;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+#guessRow{display:flex;gap:10px;width:100%;max-width:360px;padding:8px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 14px 30px -16px rgba(0,0,0,.6)}
+#guessInput{flex:1;min-width:0;font-family:inherit;font-size:26px;text-align:center;padding:10px 12px;border-radius:999px;border:2px solid rgba(255,255,255,.18);outline:none;font-weight:900;color:#fff;background:rgba(0,0,0,.25);transition:border-color .2s,box-shadow .2s;-moz-appearance:textfield;appearance:textfield}
+#guessInput::-webkit-outer-spin-button,#guessInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+#guessInput::placeholder{color:rgba(255,255,255,.4)}
+#guessInput:focus{border-color:#ff7ab6;box-shadow:0 0 0 4px rgba(255,79,154,.25)}
+#guessInput:disabled{opacity:.6}
+#guessBtn{flex:none}
+#guessHist{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px;max-width:360px}
+#guessHist span{padding:7px 14px;border-radius:999px;font-weight:900;font-size:15px;color:#fff;animation:popIn .35s cubic-bezier(.3,1.6,.5,1);box-shadow:0 6px 14px -6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4)}
+#guessHist span.hi::after{content:" ↓"}#guessHist span.lo::after{content:" ↑"}#guessHist span.ok::after{content:" ✓"}
+.hi{background:linear-gradient(135deg,#ff6b8b,#ff4f4f)}.lo{background:linear-gradient(135deg,#4dabf7,#3a6bff)}.ok{background:linear-gradient(135deg,#2fd98a,#14b8a6);box-shadow:0 0 18px rgba(47,217,138,.8)!important}
+#guessMeta{margin-top:18px;color:var(--muted);font-size:14px;font-weight:700;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.08);text-align:center}
+#guessMeta:empty{display:none}
+
+/* toast */
+#toasts{position:fixed;top:calc(var(--topH) + var(--sat) + 10px);left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:8px;width:90%;max-width:360px;pointer-events:none}
+.toast{position:relative;overflow:hidden;color:#1d1240;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:18px;padding:12px 14px 12px 20px;box-shadow:0 16px 34px -10px rgba(0,0,0,.55);font-weight:800;font-size:15px;line-height:1.4;animation:tin .45s cubic-bezier(.3,1.5,.5,1)}
+.toast::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(#ffd23f,#ff4f9a)}
+.toast small{display:inline-block;font-weight:900;color:#3b2500;margin-top:5px;padding:2px 10px;border-radius:999px;background:linear-gradient(135deg,#ffe066,#ffb21c)}
+@keyframes tin{from{transform:translateY(-24px) scale(.9);opacity:0}}
+
+@media (max-width:370px){
+  .hero .hero-title{font-size:23px}
+  .stat b{font-size:17px}.stat .si{font-size:20px}
+  .card{padding:14px 34px 14px 18px}.card .ic{width:54px;height:54px;font-size:30px}
+  .card h3{font-size:18px}
+  .rec b{font-size:19px}
+  .btn{padding:14px 30px}
+  .hud{font-size:14px}.hud b{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .bg-blobs i{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="top">
+  <button id="backBtn" class="hidden">‹ 首頁</button>
+  <span class="title" id="topTitle">小遊戲合集</span>
+  <span id="coins">🪙 0</span>
+</div>
+<div id="toasts"></div>
+
+<!-- HOME -->
+<div id="home" class="view">
+  <div class="hero" aria-hidden="true">
+    <div class="hello">👋 嗨，玩家！</div>
+    <div class="hero-title">今天想玩什麼？</div>
+    <div class="hero-stats">
+      <div class="stat"><span class="si">🪙</span><span><small>金幣</small><b id="heroCoins">0</b></span></div>
+      <div class="stat"><span class="si">🔥</span><span><small>連續登入</small><b id="heroStreak">1 天</b></span></div>
+    </div>
+  </div>
+  <div class="cards">
+    <button class="card" data-go="tap"><span class="ic" style="background:#ffe1ea">🎯</span><span><h3>點點點</h3><p>圓點一出現就快點！越玩越快</p></span></button>
+    <button class="card" data-go="simon"><span class="ic" style="background:#e2f0ff">🌈</span><span><h3>顏色記憶</h3><p>記住閃爍順序，照著點回來</p></span></button>
+    <button class="card" data-go="guess"><span class="ic" style="background:#e3fbe9">🔢</span><span><h3>猜數字</h3><p>1 到 100，用最少次數猜中</p></span></button>
+  </div>
+  <h2>🏆 最高紀錄</h2>
+  <div class="records">
+    <div class="rec"><span>點點點</span><b id="recTap">-</b></div>
+    <div class="rec"><span>顏色記憶</span><b id="recSimon">-</b></div>
+    <div class="rec"><span>猜數字</span><b id="recGuess">-</b></div>
+  </div>
+  <h2>📋 今日任務</h2>
+  <div class="tprog" aria-hidden="true"><div class="tbar"><i id="taskBar"></i></div><span id="taskCount">0/0</span></div>
+  <div id="taskList"></div>
+  <p class="note">任務每天重置。金幣只是遊戲內的趣味分數，<br>不能兌換任何東西，純娛樂 😊</p>
+</div>
+
+<!-- TAP -->
+<div id="tap" class="view hidden">
+  <div class="hud"><span>分數 <b id="tScore">0</b></span><span>❤️ <b id="tLives">5</b></span><span>⏱ <b id="tTime">150</b>s</span></div>
+  <div id="field"></div>
+  <div id="flash"></div>
+  <div id="tStart" class="overlay"><h1>點點點</h1><p>圓點出現就快點它！<br>外圈縮小代表快消失了。<br>越快點中分數越高，越玩越快、越小、越多。<br>漏掉 5 顆或 150 秒到就結束。</p><button class="btn" id="tStartBtn">開始</button></div>
+  <div id="tOver" class="overlay hidden"><h1>遊戲結束</h1><p>最終分數</p><div class="big" id="tFinal">0</div><p id="tStats"></p><button class="btn" id="tAgain">再玩一次</button></div>
+</div>
+
+<!-- SIMON -->
+<div id="simon" class="view hidden">
+  <div id="simonInfo">第 <span id="sLevel">0</span> 關</div>
+  <div id="simonMsg">按開始，記住顏色順序</div>
+  <div id="pads" class="lock">
+    <button class="pad" data-i="0" style="background:#ff4f81"></button>
+    <button class="pad" data-i="1" style="background:#3a86ff"></button>
+    <button class="pad" data-i="2" style="background:#ffc300"></button>
+    <button class="pad" data-i="3" style="background:#2bb673"></button>
+  </div>
+  <div style="margin-top:22px"><button class="btn blue" id="sStart">開始</button></div>
+  <div id="sOver" class="overlay hidden"><h1>點錯了！</h1><p>你通過了</p><div class="big"><span id="sFinal">0</span> 關</div><p id="sBest"></p><button class="btn" id="sAgain">再玩一次</button></div>
+</div>
+
+<!-- GUESS -->
+<div id="guess" class="view hidden">
+  <div class="q">🤔</div>
+  <p style="font-size:17px;color:#555">我想好一個 1 到 100 的數字了</p>
+  <div id="guessHint">&nbsp;</div>
+  <div id="guessRow">
+    <input id="guessInput" type="number" inputmode="numeric" min="1" max="100" placeholder="?">
+    <button class="btn" id="guessBtn" style="padding:12px 24px">猜！</button>
+  </div>
+  <div id="guessHist"></div>
+  <div id="guessMeta"></div>
+  <button class="btn blue hidden" id="guessAgain" style="margin-top:20px">再玩一次</button>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+/* ---------- storage ---------- */
+const KEY='gameHub_v1';
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
+S.coins=S.coins||0;S.best=S.best||{};S.streak=S.streak||0;
+if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ---------- tasks & coins ---------- */
+const TASKS=[
+  {id:'login',name:()=>`連續登入（目前 ${S.streak} 天）`,coins:()=>Math.min(5*S.streak,35)},
+  {id:'tapOnce',name:()=>'完成一局點點點',coins:()=>10},
+  {id:'simon5',name:()=>'在顏色記憶中達到第 5 關',coins:()=>20},
+  {id:'guess10',name:()=>'猜數字用 10 次以內猜中',coins:()=>15}
+];
+function renderCoins(){$('coins').textContent='🪙 '+S.coins}
+function toast(title,sub){
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML=title+(sub?'<small>'+sub+'</small>':'');
+  $('toasts').appendChild(t);setTimeout(()=>t.remove(),2800);
+}
+function complete(id){
+  if(S.tasks.done.includes(id))return;
+  const t=TASKS.find(x=>x.id===id);const c=t.coins();
+  S.tasks.done.push(id);S.coins+=c;save();renderCoins();renderHome();
+  toast('🎉 任務完成：'+t.name(),'+'+c+' 金幣');
+}
+function renderHome(){
+  $('taskList').innerHTML=TASKS.map(t=>{
+    const d=S.tasks.done.includes(t.id);
+    return `<div class="task${d?' done':''}"><span>${d?'✅':'⬜'} ${t.name()}</span><span class="r">${d?'已完成':'+'+t.coins()+' 🪙'}</span></div>`;
+  }).join('');
+  $('recTap').textContent=S.best.tap!=null?S.best.tap:'-';
+  $('recSimon').textContent=S.best.simon!=null?S.best.simon+' 關':'-';
+  $('recGuess').textContent=S.best.guess!=null?S.best.guess+' 次':'-';
+}
+// login streak
+(function(){
+  const t=today();
+  if(S.lastLogin!==t){
+    const y=new Date();y.setDate(y.getDate()-1);
+    const yd=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();
+    S.streak=(S.lastLogin===yd)?S.streak+1:1;
+    S.lastLogin=t;save();
+  }
+})();
+
+/* ---------- navigation ---------- */
+const views=['home','tap','simon','guess'];
+const titles={home:'小遊戲合集',tap:'🎯 點點點',simon:'🌈 顏色記憶',guess:'🔢 猜數字'};
+function go(v){
+  if(v!=='tap')tapStop(true);
+  if(v!=='simon')simonStop();
+  views.forEach(x=>$(x).classList.toggle('hidden',x!==v));
+  $('backBtn').classList.toggle('hidden',v==='home');
+  $('topTitle').textContent=titles[v];
+  if(v==='home')renderHome();
+  if(v==='guess'&&!G.active)guessNew();
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+$('backBtn').addEventListener('click',()=>go('home'));
+
+/* ---------- sound ---------- */
+let AC=null;
+function beep(f,ms){
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type='sine';
+    g.gain.setValueAtTime(.15,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+ms/1000);
+    o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+ms/1000);}catch(e){}
+}
+
+/* ---------- game 1: tap ---------- */
+const GT=150,LIVES=5,field=$('field');
+let T={running:false,dots:new Set()};
+function tDiff(){const t=(performance.now()-T.start)/1000;return Math.min(1,t/GT*0.7+T.hits/120*0.5)}
+function tParams(){
+  const d=tDiff(),m=Math.min(field.clientWidth,field.clientHeight);
+  return{size:Math.max(28,Math.min(110,m*.22)*(1-d*.68)),life:2200-d*1350,spawn:1100-d*780,max:1+Math.floor(d*4)};
+}
+function tSpawn(){
+  if(!T.running)return;
+  const p=tParams();
+  if(T.dots.size<p.max){
+    const s=p.size,w=field.clientWidth,h=field.clientHeight,c=`hsl(${Math.random()*360|0},90%,58%)`;
+    const el=document.createElement('div');el.className='dot';
+    el.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*(w-s)}px;top:${Math.random()*(h-s)}px;background:${c};color:${c}`;
+    el.innerHTML='<div class="ring"></div>';
+    const info={el,born:performance.now(),life:p.life};
+    info.to=setTimeout(()=>tMiss(info),p.life);
+    el.addEventListener('pointerdown',e=>{e.preventDefault();tHit(info,e)});
+    field.appendChild(el);T.dots.add(info);
+    if(el.firstChild.animate)el.firstChild.animate([{transform:'scale(1.5)',opacity:.7},{transform:'scale(1)',opacity:.1}],{duration:p.life,fill:'forwards'});
+  }
+  T.spawnT=setTimeout(tSpawn,p.spawn*(.7+Math.random()*.6));
+}
+function tRemove(i){clearTimeout(i.to);i.el.remove();T.dots.delete(i)}
+function tHit(i,e){
+  if(!T.running||!T.dots.has(i))return;
+  const rt=performance.now()-i.born;
+  const pts=10+Math.max(0,Math.round(100*(1-rt/i.life)))+Math.round(tDiff()*50);
+  T.score+=pts;T.hits++;$('tScore').textContent=T.score;
+  const r=field.getBoundingClientRect(),b=document.createElement('div');
+  b.className='burst';b.textContent='+'+pts;b.style.left=(e.clientX-r.left-15)+'px';b.style.top=(e.clientY-r.top-20)+'px';
+  field.appendChild(b);setTimeout(()=>b.remove(),600);
+  beep(660+Math.random()*300,80);if(navigator.vibrate)navigator.vibrate(15);
+  tRemove(i);clearTimeout(T.spawnT);T.spawnT=setTimeout(tSpawn,120);
+}
+function tMiss(i){
+  if(!T.running)return;
+  tRemove(i);T.lives--;$('tLives').textContent=T.lives;beep(180,200);
+  const f=$('flash');f.style.opacity=1;setTimeout(()=>f.style.opacity=0,200);
+  if(T.lives<=0)tEnd();
+}
+function tTick(){const l=Math.max(0,GT-Math.floor((performance.now()-T.start)/1000));$('tTime').textContent=l;if(l<=0)tEnd()}
+function tStart(){
+  T.dots.forEach(tRemove);
+  T={running:true,dots:new Set(),score:0,hits:0,lives:LIVES,start:performance.now()};
+  field.innerHTML='';$('tScore').textContent=0;$('tLives').textContent=LIVES;$('tTime').textContent=GT;
+  $('tStart').classList.add('hidden');$('tOver').classList.add('hidden');
+  T.tick=setInterval(tTick,250);T.spawnT=setTimeout(tSpawn,400);
+}
+function tStop(){T.running=false;clearTimeout(T.spawnT);clearInterval(T.tick);T.dots.forEach(tRemove)}
+function tapStop(reset){if(T.running){tStop();if(reset){$('tOver').classList.add('hidden');$('tStart').classList.remove('hidden')}}}
+function tEnd(){
+  if(!T.running)return;tStop();
+  const secs=Math.round((performance.now()-T.start)/1000);
+  let rec=false;if(S.best.tap==null||T.score>S.best.tap){S.best.tap=T.score;rec=true;save()}
+  $('tFinal').textContent=T.score;
+  $('tStats').innerHTML=`點中 ${T.hits} 顆・撐了 ${secs} 秒<br>${rec?'🏆 新紀錄！':'最高紀錄：'+S.best.tap}`;
+  $('tOver').classList.remove('hidden');
+  complete('tapOnce');
+}
+$('tStartBtn').addEventListener('click',tStart);$('tAgain').addEventListener('click',tStart);
+$('tap').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+
+/* ---------- game 2: simon ---------- */
+const pads=[...document.querySelectorAll('.pad')],TONES=[330,440,554,659];
+let Sm={seq:[],pos:0,timers:[],playing:false};
+function light(i,ms){pads[i].classList.add('on');beep(TONES[i],ms);Sm.timers.push(setTimeout(()=>pads[i].classList.remove('on'),ms))}
+function simonStop(){Sm.timers.forEach(clearTimeout);Sm.timers=[];Sm.playing=false;pads.forEach(p=>p.classList.remove('on'));$('pads').classList.add('lock')}
+function simonNext(){
+  Sm.seq.push(Math.random()*4|0);Sm.pos=0;
+  $('sLevel').textContent=Sm.seq.length;$('simonMsg').textContent='👀 仔細看…';
+  $('pads').classList.add('lock');
+  const gap=Math.max(280,650-Sm.seq.length*25),on=gap*.65;
+  Sm.seq.forEach((c,k)=>Sm.timers.push(setTimeout(()=>light(c,on),600+k*gap)));
+  Sm.timers.push(setTimeout(()=>{$('pads').classList.remove('lock');$('simonMsg').textContent='👉 換你了！照順序點'},600+Sm.seq.length*gap));
+}
+function simonStart(){simonStop();Sm.seq=[];Sm.playing=true;$('sOver').classList.add('hidden');$('sStart').classList.add('hidden');simonNext()}
+pads.forEach(p=>p.addEventListener('pointerdown',e=>{
+  e.preventDefault();if(!Sm.playing||$('pads').classList.contains('lock'))return;
+  const i=+p.dataset.i;light(i,200);
+  if(i!==Sm.seq[Sm.pos]){simonLose();return}
+  Sm.pos++;
+  if(Sm.pos===Sm.seq.length){
+    const passed=Sm.seq.length;
+    if(passed+1>=5)complete('simon5'); // reaching level 5
+    $('pads').classList.add('lock');$('simonMsg').textContent='✨ 答對了！';
+    Sm.timers.push(setTimeout(simonNext,700));
+  }
+}));
+function simonLose(){
+  beep(150,400);const lvl=Sm.seq.length-1;simonStop();
+  let rec=false;if(S.best.simon==null||lvl>S.best.simon){S.best.simon=lvl;rec=true;save()}
+  $('sFinal').textContent=lvl;$('sBest').textContent=rec&&lvl>0?'🏆 新紀錄！':'最高紀錄：'+S.best.simon+' 關';
+  $('sOver').classList.remove('hidden');$('sStart').classList.remove('hidden');
+  $('simonMsg').textContent='按開始，記住顏色順序';$('sLevel').textContent=0;
+}
+$('sStart').addEventListener('click',simonStart);$('sAgain').addEventListener('click',simonStart);
+
+/* ---------- game 3: guess ---------- */
+let G={active:false};
+function guessNew(){
+  G={active:true,target:1+Math.random()*100|0,tries:0,lo:1,hi:100};
+  $('guessHist').innerHTML='';$('guessHint').innerHTML='&nbsp;';$('guessInput').value='';
+  $('guessInput').disabled=false;$('guessBtn').disabled=false;$('guessAgain').classList.add('hidden');
+  $('guessMeta').textContent=`範圍 1 ～ 100・最少紀錄：${S.best.guess!=null?S.best.guess+' 次':'尚無'}`;
+  document.querySelector('#guess .q').textContent='🤔';
+}
+function guessDo(){
+  if(!G.active)return;
+  const v=parseInt($('guessInput').value,10);
+  if(isNaN(v)||v<1||v>100){$('guessHint').textContent='請輸入 1 到 100 的數字';$('guessHint').style.color='#999';return}
+  G.tries++;const s=document.createElement('span');s.textContent=v;
+  const h=$('guessHint');
+  if(v>G.target){h.textContent='⬇️ 太大了';h.style.color='#ff6b6b';s.className='hi';G.hi=Math.min(G.hi,v-1);beep(300,120)}
+  else if(v<G.target){h.textContent='⬆️ 太小了';h.style.color='#4dabf7';s.className='lo';G.lo=Math.max(G.lo,v+1);beep(500,120)}
+  else{
+    s.className='ok';G.active=false;h.textContent=`🎉 猜中了！用了 ${G.tries} 次`;h.style.color='#2bb673';
+    document.querySelector('#guess .q').textContent='🥳';beep(880,300);
+    let rec=false;if(S.best.guess==null||G.tries<S.best.guess){S.best.guess=G.tries;rec=true;save()}
+    $('guessMeta').textContent=rec?'🏆 新紀錄！':'最少紀錄：'+S.best.guess+' 次';
+    $('guessInput').disabled=true;$('guessBtn').disabled=true;$('guessAgain').classList.remove('hidden');
+    if(G.tries<=10)complete('guess10');
+  }
+  $('guessHist').appendChild(s);
+  if(G.active){$('guessMeta').textContent=`已猜 ${G.tries} 次・範圍 ${G.lo} ～ ${G.hi}`;$('guessInput').value='';$('guessInput').focus()}
+}
+$('guessBtn').addEventListener('click',guessDo);
+$('guessInput').addEventListener('keydown',e=>{if(e.key==='Enter')guessDo()});
+$('guessAgain').addEventListener('click',guessNew);
+
+/* ---------- init ---------- */
+renderCoins();renderHome();go('home');
+setTimeout(()=>complete('login'),400);
+})();
+</script>
+<script>
+/* purely decorative: mirrors coins / streak / task progress into the hero & progress bar (read-only) */
+(function(){
+  var g=function(i){return document.getElementById(i)};
+  function sync(){
+    var c=g('coins'),hc=g('heroCoins'),hs=g('heroStreak');
+    if(c&&hc)hc.textContent=c.textContent.replace('🪙','').trim();
+    try{var d=JSON.parse(localStorage.getItem('gameHub_v1'))||{};if(hs)hs.textContent=(d.streak||1)+' 天'}catch(e){}
+    var all=document.querySelectorAll('#taskList .task').length,done=document.querySelectorAll('#taskList .task.done').length;
+    if(g('taskBar'))g('taskBar').style.width=(all?done/all*100:0)+'%';
+    if(g('taskCount'))g('taskCount').textContent=done+'/'+all;
+  }
+  sync();
+  if(window.MutationObserver){
+    var mo=new MutationObserver(sync);
+    ['coins','taskList'].forEach(function(i){var e=g(i);if(e)mo.observe(e,{childList:true,characterData:true,subtree:true})});
+  }
+})();
+</script>
+</body>
+</html>
