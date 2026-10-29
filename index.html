@@ -435,6 +435,46 @@ body:has(#tap:not(.hidden)) #top{--gtx:var(--tapT)}body:has(#simon:not(.hidden))
 .task .r{color:#b45309;border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.1)}
 .task.done .r{color:var(--green);border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.1)}
 @media (prefers-color-scheme:dark){.task .r{color:#fbbf24}}
+/* ---------- daily tasks: tiers / progress / chest ---------- */
+.task{--tc:59,130,246;--tx:#1d4ed8;padding:12px 14px 12px 16px}
+.task::after{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--t1),var(--t2));box-shadow:0 0 10px rgba(var(--tc),.7);opacity:.9}
+.tk-d{--t1:var(--c-amber);--t2:#fbbf24;--tc:245,158,11;--tx:#b45309}
+.tk-e{--t1:var(--c-lime);--t2:#10b981;--tc:34,197,94;--tx:#047857}
+.tk-n{--t1:var(--c-cyan);--t2:var(--c-blue);--tc:6,182,212;--tx:#0e7490}
+.tk-h{--t1:var(--c-pink);--t2:var(--c-violet);--tc:236,72,153;--tx:#be185d}
+.tk-c{--t1:var(--c-amber);--t2:var(--c-pink);--tc:245,158,11;--tx:#b45309;background:linear-gradient(90deg,rgba(245,158,11,.08),rgba(236,72,153,.05) 60%,transparent)}
+.tk-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.tk-top{display:flex;align-items:center;gap:8px;min-width:0}
+.tk-b{flex:none;font-size:11px;font-weight:700;letter-spacing:.06em;line-height:18px;padding:0 7px;border-radius:5px;color:var(--tx);background:rgba(var(--tc),.12);border:1px solid rgba(var(--tc),.42)}
+.tk-h .tk-b{color:#fff;border-color:transparent;background:linear-gradient(120deg,var(--c-pinkD),var(--c-violetD));box-shadow:0 0 12px -2px rgba(236,72,153,.55)}
+.tk-c .tk-b{color:#fff;border-color:transparent;background:linear-gradient(120deg,var(--c-amberD),var(--c-pinkD));box-shadow:0 0 12px -2px rgba(245,158,11,.55)}
+.tk-nm{min-width:0}
+.tk-top .tk-nm{font-size:15px;line-height:1.35}
+.tk-p{display:flex;align-items:center;gap:8px;min-width:0}
+.tk-bar{flex:1;max-width:150px;height:4px;border-radius:2px;background:var(--fill);overflow:hidden}
+.tk-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--t1),var(--t2));box-shadow:0 0 8px rgba(var(--tc),.7);transition:width .5s ease}
+.tk-p small{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task.done::after{opacity:.35;box-shadow:none}
+.task.done .tk-b{opacity:.55;filter:saturate(.6);box-shadow:none}
+.task.done .tk-top .tk-nm{color:var(--ink3)}
+.tk-h:not(.done) .r{color:var(--c-pinkD);border-color:rgba(236,72,153,.45);background:rgba(236,72,153,.1)}
+.tk-c:not(.done) .r{color:#fff;border-color:transparent;background:linear-gradient(120deg,var(--c-amberD),var(--c-pinkD));box-shadow:0 0 14px -4px rgba(236,72,153,.7)}
+.task.flash{animation:tkFlash 1.1s ease-out}
+@keyframes tkFlash{0%{background-color:rgba(var(--tc),.22)}100%{background-color:transparent}}
+/* tier toasts */
+.toast.tst-e::before{content:"🌱";background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.45)}
+.toast.tst-n::before{content:"⚡";background:rgba(6,182,212,.14);border-color:rgba(6,182,212,.45)}
+.toast.tst-h::before{content:"🔥";background:linear-gradient(140deg,rgba(236,72,153,.22),rgba(139,92,246,.22));border-color:rgba(236,72,153,.5)}
+.toast.tst-d::before{content:"📅";background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.45)}
+.toast.tst-c::before{content:"🎁";background:linear-gradient(140deg,rgba(245,158,11,.25),rgba(236,72,153,.25));border-color:rgba(245,158,11,.55)}
+.toast.tst-h{border-color:rgba(236,72,153,.4)}
+.toast.tst-c{border-color:rgba(245,158,11,.5);box-shadow:0 8px 30px rgba(0,0,0,.12),0 0 26px -8px rgba(245,158,11,.7)}
+@media (prefers-color-scheme:dark){
+  .tk-d,.tk-c{--tx:#fbbf24}.tk-e{--tx:#4ade80}.tk-n{--tx:#22d3ee}.tk-h{--tx:#f9a8d4}
+  .tk-h:not(.done) .r{color:#f9a8d4}
+  .tk-c{background:linear-gradient(90deg,rgba(245,158,11,.1),rgba(236,72,153,.06) 60%,transparent)}
+}
+@media (max-width:370px){.tk-top .tk-nm{font-size:14px}.tk-bar{max-width:110px}}
 
 /* primary buttons: gradient neon */
 .btn,.btn.blue{color:#fff!important;background:linear-gradient(120deg,var(--c-blueD),var(--c-violetD));text-shadow:0 1px 1px rgba(0,0,0,.18);
@@ -570,7 +610,7 @@ body:has(#tap:not(.hidden)) #top{--gtx:var(--tapT)}body:has(#simon:not(.hidden))
   <h2>📋 今日任務</h2>
   <div class="tprog" aria-hidden="true"><div class="tbar"><i id="taskBar"></i></div><span id="taskCount">0/0</span></div>
   <div id="taskList"></div>
-  <p class="note">任務每天重置。金幣只是遊戲內的趣味分數，<br>不能兌換任何東西，純娛樂 😊</p>
+  <p class="note">任務每天 00:00（台灣時間）更新，所有玩家同一天的任務都一樣。<br>金幣只是遊戲內的趣味分數，不能兌換任何東西，純娛樂 😊</p>
 </div>
 
 <!-- TAP -->
@@ -673,52 +713,149 @@ const $=id=>document.getElementById(id);
 /* ---------- storage ---------- */
 const LEGACY_KEY='gameHub_v1',ACC_KEY='gameHub_accounts',SES_KEY='gameHub_session';
 let KEY=null; // per-player storage key 'gameHub_v1:<帳號>' (null = nobody logged in)
-const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+// calendar day in Taipei (UTC+8, no DST) so every player rolls over at the same moment
+const tpeDay=ms=>{const d=new Date(ms+8*3600e3);return d.getUTCFullYear()+'-'+(d.getUTCMonth()+1)+'-'+d.getUTCDate()};
+const today=()=>tpeDay(Date.now());
+/* ---------- tasks & coins ---------- */
+/* Daily tasks: the login bonus + 6 tasks (2 簡單 / 2 普通 / 2 困難) + a chest for finishing all six.
+   The 6 are picked ONLY from the Taipei calendar date (seeded hash), so every player on every device
+   gets the same list that day. Cloud data stays {date, done[]} (≤ 8 ids: login + 6 + chest);
+   per-day counters / best-of-today live in localStorage 'gameHub_tp:<id>' only (never synced). */
+const TIERS={e:'簡單',n:'普通',h:'困難'},CHEST=50;
+const POOL=[
+  // ---- 簡單 10–15 ----
+  {id:'tap1',   t:'e',g:'tap',  grp:'tapR', c:10,name:'完成一局點點點',            goal:1,   v:P=>P.tapR},
+  {id:'tap600', t:'e',g:'tap',  grp:'tapS', c:15,name:'點點點單局 600 分',          goal:600, v:P=>P.bTap,best:1,u:'分'},
+  {id:'sim5',   t:'e',g:'simon',grp:'simL', c:12,name:'顏色記憶達到第 5 關',        goal:5,   v:P=>P.bSim,best:1,u:'關'},
+  {id:'gue10',  t:'e',g:'guess',grp:'gueN', c:10,name:'猜數字 10 次內猜中',          goal:1,   v:P=>P.bGue&&P.bGue<=10?1:0,tries:1},
+  {id:'play2',  t:'e',g:'',     grp:'play', c:12,name:'玩 2 種不同的遊戲',          goal:2,   v:P=>P.played.length},
+  // ---- 普通 25–40 ----
+  {id:'tap2000',t:'n',g:'tap',  grp:'tapS', c:30,name:'點點點單局 2000 分',         goal:2000,v:P=>P.bTap,best:1,u:'分'},
+  {id:'tapR3',  t:'n',g:'tap',  grp:'tapR', c:25,name:'點點點玩 3 局',              goal:3,   v:P=>P.tapR},
+  {id:'sim10',  t:'n',g:'simon',grp:'simL', c:35,name:'顏色記憶達到第 10 關',       goal:10,  v:P=>P.bSim,best:1,u:'關'},
+  {id:'simR3',  t:'n',g:'simon',grp:'simR', c:25,name:'顏色記憶玩 3 局',            goal:3,   v:P=>P.simR},
+  {id:'gue7',   t:'n',g:'guess',grp:'gueN', c:30,name:'猜數字 7 次內猜中',           goal:1,   v:P=>P.bGue&&P.bGue<=7?1:0,tries:1},
+  {id:'gueW3',  t:'n',g:'guess',grp:'gueW', c:30,name:'猜數字猜中 3 次',            goal:3,   v:P=>P.gueW},
+  {id:'all3',   t:'n',g:'',     grp:'play', c:35,name:'三種遊戲各玩一局',            goal:3,   v:P=>P.played.length},
+  // ---- 困難 60–100 ----
+  {id:'tap5000',t:'h',g:'tap',  grp:'tapS', c:80,name:'點點點單局 5000 分',         goal:5000,v:P=>P.bTap,best:1,u:'分'},
+  {id:'tapNM',  t:'h',g:'tap',  grp:'tapP', c:70,name:'點點點一顆都沒漏拿到 1200 分',goal:1200,v:P=>P.bClean,best:1,u:'分'},
+  {id:'sim15',  t:'h',g:'simon',grp:'simL', c:90,name:'顏色記憶達到第 15 關',       goal:15,  v:P=>P.bSim,best:1,u:'關'},
+  {id:'gue5',   t:'h',g:'guess',grp:'gueN', c:60,name:'猜數字 5 次內猜中',           goal:1,   v:P=>P.bGue&&P.bGue<=5?1:0,tries:1},
+  {id:'gueS3',  t:'h',g:'guess',grp:'gueW', c:80,name:'猜數字連續 3 局都 7 次內猜中', goal:3,   v:P=>Math.max(P.gueS,P.gueSb)},
+  {id:'coin100',t:'h',g:'',     grp:'coin', c:60,name:'今天賺到 100 金幣',          goal:100, v:P=>P.earned}
+];
+const LOGIN={id:'login',t:'d',name:()=>`連續登入（目前 ${S.streak} 天）`,coins:()=>Math.min(5*S.streak,35)};
+// date string 'YYYY-M-D' (Taipei) → the same 6 tasks for everyone
+function dayKey(ds){const m=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(ds||'');return m?m[1]+'-'+m[2].padStart(2,'0')+'-'+m[3].padStart(2,'0'):String(ds)}
+function rngFor(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
+  h^=h>>>16;h=Math.imul(h,0x85ebca6b);h^=h>>>13;h=Math.imul(h,0xc2b2ae35);h^=h>>>16; // avalanche so neighbouring dates differ
+  return()=>{h=(h+0x6D2B79F5)|0;let t=Math.imul(h^(h>>>15),1|h);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296}}
+const pickCache={};
+function pickTasks(ds){
+  const k=dayKey(ds);if(pickCache[k])return pickCache[k];
+  const r=rngFor('gameHub-tasks|'+k);let out=null;
+  // rejection sampling: 2 random per tier, redraw until no two share a group (e.g. 第 5 關 + 第 15 關) and all 3 games appear
+  for(let a=0;a<500&&!out;a++){
+    const sel=[];
+    for(const t of ['e','n','h']){const p=POOL.filter(x=>x.t===t);for(let k=0;k<2;k++)sel.push(p.splice(Math.floor(r()*p.length),1)[0])}
+    if(new Set(sel.map(x=>x.grp)).size===6&&new Set(sel.map(x=>x.g).filter(Boolean)).size===3)out=sel;
+  }
+  if(!out)out=['tap1','gue10','sim10','gueW3','tapNM','coin100'].map(i=>POOL.find(x=>x.id===i)); // never reached in practice
+  return pickCache[k]=out;
+}
+const taskIds=ds=>['login',...pickTasks(ds).map(x=>x.id),'chest'];
+const taskOk=(ds,id)=>taskIds(ds).includes(id);
+/* per-day progress (local only) */
+const PK=()=>KEY?'gameHub_tp:'+KEY.slice(LEGACY_KEY.length+1):null;
+const P0=()=>({date:today(),tapR:0,simR:0,gueW:0,gueS:0,gueSb:0,played:[],earned:0,bTap:0,bClean:0,bSim:0,bGue:0});
+let P=P0();
+function loadP(){let p=null;try{p=PK()&&JSON.parse(localStorage.getItem(PK()))}catch(e){}P=Object.assign(P0(),p&&p.date===today()?p:{});if(!Array.isArray(P.played))P.played=[]}
+function saveP(){const k=PK();if(!k)return;try{localStorage.setItem(k,JSON.stringify(P))}catch(e){}}
+function tidyTasks(){ // drop ids that don't belong to today's list (e.g. legacy 'tapOnce' from an older version)
+  if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
+  if(!Array.isArray(S.tasks.done))S.tasks.done=[];
+  S.tasks.done=[...new Set(S.tasks.done.filter(id=>taskOk(S.tasks.date,id)))].slice(0,8);
+}
+function renderCoins(){$('coins').textContent='🪙 '+S.coins}
+function toast(title,sub,cls){
+  const t=document.createElement('div');t.className='toast'+(cls?' '+cls:'');
+  t.innerHTML=title+(sub?'<small>'+sub+'</small>':'');
+  $('toasts').appendChild(t);setTimeout(()=>t.remove(),cls?3200:2800);
+}
+function complete(id){
+  if(!KEY)return;rollDay();
+  if(S.tasks.done.includes(id)||S.tasks.done.length>=8)return;
+  let c,name,tier;
+  if(id==='login'){c=LOGIN.coins();name=LOGIN.name();tier='d'}
+  else if(id==='chest'){c=CHEST;name='今日寶箱';tier='c'}
+  else{const t=pickTasks(S.tasks.date).find(x=>x.id===id);if(!t)return;c=t.c;name=t.name;tier=t.t}
+  S.tasks.done.push(id);S.coins+=c;
+  if(id!=='chest'&&id!=='coin100'){P.earned+=c;saveP()}
+  save();renderCoins();renderHome();
+  const row=$('taskList').querySelector('[data-task="'+id+'"]');if(row)row.classList.add('flash');
+  if(tier==='c')toast('🎁 寶箱開啟！今日任務全部完成','+'+c+' 金幣・明天再來挑戰新任務','tst-c');
+  else toast((tier==='d'?'🎉 ':'')+'任務完成：'+name,(TIERS[tier]?TIERS[tier]+'・':'')+'+'+c+' 金幣','tst-'+tier);
+  checkTasks();
+}
+// re-check every task against today's progress (call after any game event)
+function checkTasks(){
+  if(!KEY)return;rollDay();
+  for(const t of pickTasks(S.tasks.date))if(!S.tasks.done.includes(t.id)&&t.v(P)>=t.goal){complete(t.id);return}
+  const six=pickTasks(S.tasks.date).every(t=>S.tasks.done.includes(t.id));
+  if(six&&!S.tasks.done.includes('chest'))complete('chest');
+}
+const tEvent=f=>{if(!KEY)return;rollDay();f(P);saveP();checkTasks();renderHome()};
+const played=g=>{if(!P.played.includes(g))P.played.push(g)};
+// Taipei midnight rollover while the page stays open
+function rollDay(){
+  if(S.tasks&&S.tasks.date===today()&&P.date===today())return;
+  const newDay=!S.tasks||S.tasks.date!==today();
+  if(newDay)S.tasks={date:today(),done:[]};
+  if(P.date!==today()){P=P0();saveP()}
+  if(newDay&&KEY){checkStreak();save();clearTimeout(loginTimer);loginTimer=setTimeout(()=>complete('login'),400)}
+}
+const esc=s=>String(s).replace(/[<>&"]/g,'');
+function taskRow(t){
+  const d=S.tasks.done.includes(t.id);let pr='',bar=null;
+  if(!d&&t.goal>1){const v=Math.max(0,Math.min(t.goal,t.v(P)||0));bar=v/t.goal;
+    pr=t.best?(v?`今日最佳 ${t.v(P)} / ${t.goal}${t.u?' '+t.u:''}`:'今日尚未達成'):`${v}/${t.goal}`}
+  else if(!d&&t.tries)pr=P.bGue?`今日最少 ${P.bGue} 次`:'';
+  return `<div class="task tk-${t.t}${d?' done':''}" data-task="${t.id}"><span class="tk-main"><span class="tk-top"><span class="tk-b">${TIERS[t.t]}</span><span class="tk-nm">${d?'✅ ':''}${esc(t.name)}</span></span>`+
+    (pr?`<span class="tk-p">${bar!=null?`<span class="tk-bar"><i style="width:${(bar*100).toFixed(1)}%"></i></span>`:''}<small>${pr}</small></span>`:'')+
+    `</span><span class="r">${d?'已完成':'+'+t.c+' 🪙'}</span></div>`;
+}
+function renderHome(){
+  rollDay();
+  const list=pickTasks(S.tasks.date),ld=S.tasks.done.includes('login'),n=list.filter(t=>S.tasks.done.includes(t.id)).length,cd=S.tasks.done.includes('chest');
+  $('taskList').innerHTML=
+    `<div class="task tk-d${ld?' done':''}" data-task="login"><span class="tk-main"><span class="tk-top"><span class="tk-b">每日</span><span class="tk-nm">${ld?'✅ ':''}${LOGIN.name()}</span></span></span><span class="r">${ld?'已完成':'+'+LOGIN.coins()+' 🪙'}</span></div>`+
+    list.map(taskRow).join('')+
+    `<div class="task tk-c${cd?' done':''}" data-task="chest"><span class="tk-main"><span class="tk-top"><span class="tk-b">寶箱</span><span class="tk-nm">${cd?'✅ 今日寶箱已開啟':'🎁 完成上面 6 個任務開寶箱'}</span></span>`+
+    (cd?'':`<span class="tk-p"><span class="tk-bar"><i style="width:${(n/6*100).toFixed(1)}%"></i></span><small>${n}/6</small></span>`)+
+    `</span><span class="r">${cd?'已領取':'+'+CHEST+' 🪙'}</span></div>`;
+  $('recTap').textContent=S.best.tap!=null?S.best.tap:'-';
+  $('recSimon').textContent=S.best.simon!=null?S.best.simon+' 關':'-';
+  $('recGuess').textContent=S.best.guess!=null?S.best.guess+' 次':'-';
+}
+
 let S;
 function loadS(){
 try{S=(KEY&&JSON.parse(localStorage.getItem(KEY)))||{}}catch(e){S={}}
 S.coins=S.coins||0;S.best=S.best||{};S.streak=S.streak||0;
-if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
+const n0=JSON.stringify(S.tasks);tidyTasks();loadP();
+if(KEY&&n0!==JSON.stringify(S.tasks))try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} // persist the tidied list (no sync event)
 }
 loadS();
 // cloud hook: tell the (optional) sync layer that something changed
 const emit=(t,d)=>{try{document.dispatchEvent(new CustomEvent('gamehub:'+t,{detail:Object.assign({id:KEY?KEY.slice(LEGACY_KEY.length+1):null},d)}))}catch(e){}};
 const save=()=>{if(!KEY)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}emit('save')};
 
-/* ---------- tasks & coins ---------- */
-const TASKS=[
-  {id:'login',name:()=>`連續登入（目前 ${S.streak} 天）`,coins:()=>Math.min(5*S.streak,35)},
-  {id:'tapOnce',name:()=>'完成一局點點點',coins:()=>10},
-  {id:'simon5',name:()=>'在顏色記憶中達到第 5 關',coins:()=>20},
-  {id:'guess10',name:()=>'猜數字用 10 次以內猜中',coins:()=>15}
-];
-function renderCoins(){$('coins').textContent='🪙 '+S.coins}
-function toast(title,sub){
-  const t=document.createElement('div');t.className='toast';
-  t.innerHTML=title+(sub?'<small>'+sub+'</small>':'');
-  $('toasts').appendChild(t);setTimeout(()=>t.remove(),2800);
-}
-function complete(id){
-  if(S.tasks.done.includes(id))return;
-  const t=TASKS.find(x=>x.id===id);const c=t.coins();
-  S.tasks.done.push(id);S.coins+=c;save();renderCoins();renderHome();
-  toast('🎉 任務完成：'+t.name(),'+'+c+' 金幣');
-}
-function renderHome(){
-  $('taskList').innerHTML=TASKS.map(t=>{
-    const d=S.tasks.done.includes(t.id);
-    return `<div class="task${d?' done':''}"><span>${d?'✅':'⬜'} ${t.name()}</span><span class="r">${d?'已完成':'+'+t.coins()+' 🪙'}</span></div>`;
-  }).join('');
-  $('recTap').textContent=S.best.tap!=null?S.best.tap:'-';
-  $('recSimon').textContent=S.best.simon!=null?S.best.simon+' 關':'-';
-  $('recGuess').textContent=S.best.guess!=null?S.best.guess+' 次':'-';
-}
 // login streak (runs when a player logs in)
 function checkStreak(){
   const t=today();
   if(S.lastLogin!==t){
-    const y=new Date();y.setDate(y.getDate()-1);
-    const yd=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();
+    const yd=tpeDay(Date.now()-864e5);
     S.streak=(S.lastLogin===yd)?S.streak+1:1;
     S.lastLogin=t;save();
   }
@@ -777,7 +914,7 @@ function tHit(i,e){
   if(!T.running||!T.dots.has(i))return;
   const rt=performance.now()-i.born;
   const pts=10+Math.max(0,Math.round(100*(1-rt/i.life)))+Math.round(tDiff()*50);
-  T.score+=pts;T.hits++;$('tScore').textContent=T.score;
+  T.score+=pts;T.hits++;if(T.lives===LIVES)T.clean=T.score;$('tScore').textContent=T.score;
   const r=field.getBoundingClientRect(),b=document.createElement('div');
   b.className='burst';b.textContent='+'+pts;b.style.left=(e.clientX-r.left-15)+'px';b.style.top=(e.clientY-r.top-20)+'px';
   field.appendChild(b);setTimeout(()=>b.remove(),600);
@@ -807,7 +944,7 @@ function tEnd(){
   $('tFinal').textContent=T.score;
   $('tStats').innerHTML=`點中 ${T.hits} 顆・撐了 ${secs} 秒<br>${rec?'🏆 新紀錄！':'最高紀錄：'+S.best.tap}`;
   $('tOver').classList.remove('hidden');
-  complete('tapOnce');
+  tEvent(P=>{P.tapR++;played('tap');P.bTap=Math.max(P.bTap,T.score);P.bClean=Math.max(P.bClean,T.clean||0)});
 }
 $('tStartBtn').addEventListener('click',tStart);$('tAgain').addEventListener('click',tStart);
 $('tap').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
@@ -833,7 +970,7 @@ pads.forEach(p=>p.addEventListener('pointerdown',e=>{
   Sm.pos++;
   if(Sm.pos===Sm.seq.length){
     const passed=Sm.seq.length;
-    if(passed+1>=5)complete('simon5'); // reaching level 5
+    tEvent(P=>{P.bSim=Math.max(P.bSim,passed+1)}); // reached level passed+1 (simon tasks)
     simonRec(passed); // save the best right away (survives back button / closing / reload mid-game)
     $('pads').classList.add('lock');$('simonMsg').textContent='✨ 答對了！';
     Sm.timers.push(setTimeout(simonNext,700));
@@ -845,6 +982,7 @@ function simonLose(){
   $('sFinal').textContent=lvl;$('sBest').textContent=rec&&lvl>0?'🏆 新紀錄！':'最高紀錄：'+S.best.simon+' 關';
   $('sOver').classList.remove('hidden');$('sStart').classList.remove('hidden');
   $('simonMsg').textContent='按開始，記住顏色順序';$('sLevel').textContent=0;
+  tEvent(P=>{P.simR++;played('simon')});
 }
 // best.simon = levels cleared (same number as 「你通過了 N 關」)
 function simonRec(n){if(S.best.simon==null||n>S.best.simon){S.best.simon=n;save()}}
@@ -878,7 +1016,7 @@ function guessDo(){
     let rec=false;if(S.best.guess==null||G.tries<S.best.guess){S.best.guess=G.tries;rec=true;save()}
     $('guessMeta').textContent=rec?'🏆 新紀錄！':'最少紀錄：'+S.best.guess+' 次';
     $('guessInput').disabled=true;$('guessBtn').disabled=true;$('guessAgain').classList.remove('hidden');
-    if(G.tries<=10)complete('guess10');
+    const n=G.tries;tEvent(P=>{P.gueW++;played('guess');P.bGue=P.bGue?Math.min(P.bGue,n):n;if(n<=7){P.gueS++;P.gueSb=Math.max(P.gueSb,P.gueS)}else P.gueS=0});
   }
   $('guessHist').appendChild(s);
   if(G.active){$('guessMeta').textContent=`已猜 ${G.tries} 次・範圍 ${G.lo} ～ ${G.hi}`;$('guessInput').value='';$('guessInput').focus()}
@@ -940,7 +1078,7 @@ function loadPlayer(id){
   try{localStorage.setItem(SES_KEY,a.id)}catch(e){}
   loadS();checkStreak();
   renderCoins();renderHome();renderPlayer();go('home');emit('login');
-  clearTimeout(loginTimer);loginTimer=setTimeout(()=>complete('login'),400);
+  clearTimeout(loginTimer);loginTimer=setTimeout(()=>{complete('login');checkTasks()},400);
   return true;
 }
 function logout(){
@@ -1060,12 +1198,12 @@ window.gameHubCore={
   accounts:()=>{accLoad();return ACC.list.slice()},
   account:id=>{accLoad();return findAcc(id)||null},
   addAccount:a=>{accLoad();if(!findAcc(a.id)){ACC.list.push(a);accSave()}},
-  hashPin,toast,
+  hashPin,toast,taskOk,
   readLocal:id=>{if(CUR&&CUR.id===id)return clone(S);try{return JSON.parse(localStorage.getItem(LEGACY_KEY+':'+id))}catch(e){return null}},
   writeLocal:(id,d)=>{ // apply merged cloud data; does NOT emit 'save'; a best record is never lowered
     d=clone(d);
-    if(CUR&&CUR.id===id){d.best=keepBest(S.best,d.best);Object.assign(S,d);if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
-      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderCoins();renderHome();return}
+    if(CUR&&CUR.id===id){d.best=keepBest(S.best,d.best);Object.assign(S,d);tidyTasks();
+      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderCoins();renderHome();setTimeout(checkTasks,0);return} // chest may now be due (tasks finished on two phones)
     try{const k=LEGACY_KEY+':'+id,o=JSON.parse(localStorage.getItem(k)||'{}')||{};d.best=keepBest(o.best,d.best);localStorage.setItem(k,JSON.stringify(Object.assign(o,d)))}catch(e){}
   }
 };
@@ -1073,6 +1211,10 @@ window.gameHubCore={
 /* ---------- init ---------- */
 renderCoins();renderHome();go('home');
 acctInit(); // daily login task fires after a player is logged in (see loadPlayer)
+// Taipei midnight: refresh today's tasks (and give the login bonus) without a reload
+setInterval(()=>{if(S.tasks.date!==today()||P.date!==today())renderHome()},20000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(S.tasks.date!==today()||P.date!==today()))renderHome()});
+window.gameHubTasks={today,pick:ds=>pickTasks(ds||today()).map(t=>({id:t.id,tier:t.t,name:t.name,coins:t.c,goal:t.goal,game:t.g})),pool:()=>POOL.map(t=>({id:t.id,tier:t.t,name:t.name,coins:t.c,goal:t.goal,game:t.g})),progress:()=>JSON.parse(JSON.stringify(P)),chest:CHEST,refresh:()=>renderHome()};
 })();
 </script>
 <script>
@@ -1254,7 +1396,8 @@ function merge(remote,local,base){
   if(rd===ld){lastLogin=r.lastLogin||l.lastLogin;streak=Math.max(r.streak,l.streak)}
   else{const[n,o]=rd>ld?[r,l]:[l,r];lastLogin=n.lastLogin;streak=n.streak;if(Math.min(rd,ld)&&nextDay(Math.min(rd,ld),Math.max(rd,ld)))streak=Math.max(n.streak,o.streak+1)}
   const rt=dnum(r.tasks.date),lt=dnum(l.tasks.date);
-  const tasks=rt===lt?{date:r.tasks.date||l.tasks.date,done:[...new Set([...r.tasks.done,...l.tasks.done])].slice(0,8)}:(rt>lt?r.tasks:l.tasks);
+  const td=r.tasks.date||l.tasks.date,okId=id=>!core.taskOk||core.taskOk(td,id); // drop legacy ids (e.g. 'tapOnce') so the 8 slots fit today's list
+  const tasks=rt===lt?{date:td,done:[...new Set([...r.tasks.done,...l.tasks.done])].filter(okId).slice(0,8)}:(rt>lt?r.tasks:l.tasks);
   return{coins,best:mergeBest(r.best,l.best),streak,lastLogin,tasks};
 }
 const sameData=(a,b)=>JSON.stringify(clean(a))===JSON.stringify(clean(b));
