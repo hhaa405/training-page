@@ -816,7 +816,7 @@ $('tap').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 const pads=[...document.querySelectorAll('.pad')],TONES=[330,440,554,659];
 let Sm={seq:[],pos:0,timers:[],playing:false};
 function light(i,ms){pads[i].classList.add('on');beep(TONES[i],ms);Sm.timers.push(setTimeout(()=>pads[i].classList.remove('on'),ms))}
-function simonStop(){Sm.timers.forEach(clearTimeout);Sm.timers=[];Sm.playing=false;pads.forEach(p=>p.classList.remove('on'));$('pads').classList.add('lock')}
+function simonStop(){Sm.timers.forEach(clearTimeout);Sm.timers=[];Sm.playing=false;wakeOff();pads.forEach(p=>p.classList.remove('on'));$('pads').classList.add('lock')}
 function simonNext(){
   Sm.seq.push(Math.random()*4|0);Sm.pos=0;
   $('sLevel').textContent=Sm.seq.length;$('simonMsg').textContent='👀 仔細看…';
@@ -825,7 +825,7 @@ function simonNext(){
   Sm.seq.forEach((c,k)=>Sm.timers.push(setTimeout(()=>light(c,on),600+k*gap)));
   Sm.timers.push(setTimeout(()=>{$('pads').classList.remove('lock');$('simonMsg').textContent='👉 換你了！照順序點'},600+Sm.seq.length*gap));
 }
-function simonStart(){simonStop();Sm.seq=[];Sm.playing=true;$('sOver').classList.add('hidden');$('sStart').classList.add('hidden');simonNext()}
+function simonStart(){simonStop();Sm.seq=[];Sm.playing=true;Sm.best0=S.best.simon;wakeOn();$('sOver').classList.add('hidden');$('sStart').classList.add('hidden');simonNext()}
 pads.forEach(p=>p.addEventListener('pointerdown',e=>{
   e.preventDefault();if(!Sm.playing||$('pads').classList.contains('lock'))return;
   const i=+p.dataset.i;light(i,200);
@@ -834,17 +834,25 @@ pads.forEach(p=>p.addEventListener('pointerdown',e=>{
   if(Sm.pos===Sm.seq.length){
     const passed=Sm.seq.length;
     if(passed+1>=5)complete('simon5'); // reaching level 5
+    simonRec(passed); // save the best right away (survives back button / closing / reload mid-game)
     $('pads').classList.add('lock');$('simonMsg').textContent='✨ 答對了！';
     Sm.timers.push(setTimeout(simonNext,700));
   }
 }));
 function simonLose(){
   beep(150,400);const lvl=Sm.seq.length-1;simonStop();
-  let rec=false;if(S.best.simon==null||lvl>S.best.simon){S.best.simon=lvl;rec=true;save()}
+  simonRec(lvl);const rec=Sm.best0==null||lvl>Sm.best0; // new record vs. the best before this game
   $('sFinal').textContent=lvl;$('sBest').textContent=rec&&lvl>0?'🏆 新紀錄！':'最高紀錄：'+S.best.simon+' 關';
   $('sOver').classList.remove('hidden');$('sStart').classList.remove('hidden');
   $('simonMsg').textContent='按開始，記住顏色順序';$('sLevel').textContent=0;
 }
+// best.simon = levels cleared (same number as 「你通過了 N 關」)
+function simonRec(n){if(S.best.simon==null||n>S.best.simon){S.best.simon=n;save()}}
+// keep the screen awake while a long sequence plays (phones auto-lock during long playbacks); no-op where unsupported
+let wakeL=null;
+function wakeOn(){try{if(navigator.wakeLock&&!wakeL)navigator.wakeLock.request('screen').then(l=>{if(Sm.playing&&!wakeL)wakeL=l;else l.release().catch(()=>{})}).catch(()=>{})}catch(e){}}
+function wakeOff(){const l=wakeL;wakeL=null;try{l&&l.release().catch(()=>{})}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Sm.playing){wakeL=null;wakeOn()}});
 $('sStart').addEventListener('click',simonStart);$('sAgain').addEventListener('click',simonStart);
 
 /* ---------- game 3: guess ---------- */
@@ -1046,6 +1054,7 @@ function acctInit(){
 
 /* ---------- bridge for the optional cloud-sync layer ---------- */
 const clone=o=>JSON.parse(JSON.stringify(o));
+const keepBest=(o,n)=>{const b=Object.assign({},n||{});o=o||{};['tap','simon'].forEach(k=>{if(typeof o[k]==='number'&&!(b[k]>=o[k]))b[k]=o[k]});if(o.guess>0&&!(b.guess>0&&b.guess<=o.guess))b.guess=o.guess;return b};
 window.gameHubCore={
   curId:()=>CUR?CUR.id:null,
   accounts:()=>{accLoad();return ACC.list.slice()},
@@ -1053,10 +1062,11 @@ window.gameHubCore={
   addAccount:a=>{accLoad();if(!findAcc(a.id)){ACC.list.push(a);accSave()}},
   hashPin,toast,
   readLocal:id=>{if(CUR&&CUR.id===id)return clone(S);try{return JSON.parse(localStorage.getItem(LEGACY_KEY+':'+id))}catch(e){return null}},
-  writeLocal:(id,d)=>{ // apply merged cloud data; does NOT emit 'save'
-    if(CUR&&CUR.id===id){Object.assign(S,clone(d));if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
+  writeLocal:(id,d)=>{ // apply merged cloud data; does NOT emit 'save'; a best record is never lowered
+    d=clone(d);
+    if(CUR&&CUR.id===id){d.best=keepBest(S.best,d.best);Object.assign(S,d);if(!S.tasks||S.tasks.date!==today())S.tasks={date:today(),done:[]};
       try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderCoins();renderHome();return}
-    try{const k=LEGACY_KEY+':'+id,o=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify(Object.assign(o,clone(d))))}catch(e){}
+    try{const k=LEGACY_KEY+':'+id,o=JSON.parse(localStorage.getItem(k)||'{}')||{};d.best=keepBest(o.best,d.best);localStorage.setItem(k,JSON.stringify(Object.assign(o,d)))}catch(e){}
   }
 };
 
@@ -1390,7 +1400,7 @@ C.remoteLogin=async(id,pin)=>{
   try{await join(id,hash,10000)}catch(e){if(e&&e.code==='permission-denied')return{ok:false,err:'pin'};handleErr(e,'join');return{ok:false,err:'offline'}}
   let data=null;try{const p=await T(F.getDoc(F.doc(db,'players',id)),8000);if(p.exists())data=clean(p.data())}catch(e){}
   core.addAccount({id,name:String(name||id),salt,hash,created:Date.now()});
-  if(data)core.writeLocal(id,data);
+  if(data)core.writeLocal(id,merge(data,core.readLocal(id),null)); // never lower anything already on this device
   setMeta(id,{link:'linked',base:data?data.coins:0,at:Date.now(),dirty:false});
   return{ok:true,name:String(name||id)};
 };
